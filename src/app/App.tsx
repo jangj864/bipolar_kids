@@ -381,6 +381,28 @@ function AddButton({ onClick, label = "+ ADD" }: { onClick: () => void; label?: 
 
 function AvatarFrame({ member }: { member: Member }) {
   const Avatar = member.customAvatar;
+  if (!Avatar && member.logoImage === enoAvatar) {
+    return (
+      <div
+        role="img"
+        aria-label={member.codename}
+        style={{
+          width: AVATAR_FRAME * 0.9,
+          height: AVATAR_FRAME * 0.9,
+          margin: AVATAR_FRAME * 0.05,
+          backgroundColor: member.color,
+          maskImage: `url("${member.logoImage}")`,
+          maskSize: "contain",
+          maskPosition: "center",
+          maskRepeat: "no-repeat",
+          WebkitMaskImage: `url("${member.logoImage}")`,
+          WebkitMaskSize: "contain",
+          WebkitMaskPosition: "center",
+          WebkitMaskRepeat: "no-repeat",
+        }}
+      />
+    );
+  }
   if (!Avatar && member.logoImage) {
     return (
       <div style={{ width: AVATAR_FRAME, height: AVATAR_FRAME, overflow: "hidden", display: "flex", alignItems: "center", justifyContent: "center" }}>
