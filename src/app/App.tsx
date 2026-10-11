@@ -1685,14 +1685,17 @@ export default function App() {
   const { done: bootDone } = useTypewriter(bootLines, 28);
 
   useEffect(() => {
-    if (bootDone) {
+    if (page === "boot" && bootDone) {
       const t = setTimeout(() => setPage("auth"), 800);
       return () => clearTimeout(t);
     }
-  }, [bootDone]);
+  }, [bootDone, page]);
 
   return (
-    <div className="min-h-screen bg-background text-foreground overflow-x-hidden font-['Share_Tech_Mono'] relative">
+    <div
+      className="min-h-screen bg-background text-foreground overflow-x-hidden font-['Share_Tech_Mono'] relative"
+      onClick={page === "boot" ? () => setPage("auth") : undefined}
+    >
       <MatrixRain />
       <ScanlineOverlay />
 
@@ -1716,7 +1719,19 @@ export default function App() {
           </div>
         </header>
 
-        {page === "boot" && <Terminal lines={bootLines} prompt="root@void:~$" />}
+        {page === "boot" && (
+          <div>
+            <Terminal lines={bootLines} prompt="root@void:~$" />
+            <button
+              type="button"
+              onClick={() => setPage("auth")}
+              className="mt-4 px-3 py-2 text-xs cursor-pointer"
+              style={{ color: PRIMARY, border: `1px solid ${PRIMARY}50` }}
+            >
+              [ CLICK / TAP TO SKIP ]
+            </button>
+          </div>
+        )}
 
         {page === "auth" && (
           <div className="max-w-md mx-auto space-y-4">
