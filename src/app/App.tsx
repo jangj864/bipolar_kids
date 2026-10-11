@@ -19,6 +19,7 @@ import ddoazooLogo from "@/imports/image-1.png";
 import DdoazooLogo from "@/imports/Vector/index";
 import velfontLogo from "@/imports/vel_font_logo.png";
 import enoLogo from "@/imports/image.png";
+import minsungLogo from "@/imports/minsung-logo.svg";
 import enoAvatar from "@/imports/image-2.png";
 
 const CHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()_+-=[]{}|;':\",./<>?\\`~";
@@ -1390,6 +1391,25 @@ function AboutTab() {
         <div className="mt-4 text-xs" style={{ color: `${PRIMARY}30`, borderTop: `1px solid ${PRIMARY}15`, paddingTop: "0.75rem" }}>
           // BUSINESS INQUIRIES, COLLABORATIONS, AND EVERYTHING ELSE
         </div>
+        <div className="mt-5" style={{ borderTop: `1px solid ${PRIMARY}15`, paddingTop: "1rem" }}>
+          <div className="text-xs mb-3" style={{ color: `${PRIMARY}60` }}>■ INSTAGRAM</div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            {["5th_ave_bipolar_kids", "bipolarkids.kr"].map(handle => (
+              <a
+                key={handle}
+                href={`https://www.instagram.com/${handle}/`}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label={`Open @${handle} on Instagram in a new tab`}
+                className="flex items-center justify-between gap-2 min-h-11 px-3 py-3 text-xs transition-colors hover:bg-green-400/10 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2"
+                style={{ color: PRIMARY, border: `1px solid ${PRIMARY}40`, textDecoration: "none" }}
+              >
+                <span>@{handle}</span>
+                <span aria-hidden="true">↗</span>
+              </a>
+            ))}
+          </div>
+        </div>
       </div>
     </div>
   );
@@ -1619,6 +1639,9 @@ function ExploreTab() {
       </ExploreLogoLink>
       <ExploreLogoLink href="https://e-no.art/" aspectRatio={1522 / 522}>
         <img src={enoLogo} alt="eno" style={{ width: "100%", height: "100%", objectFit: "contain" }} />
+      </ExploreLogoLink>
+      <ExploreLogoLink href="https://minsungchodesign.com/" aspectRatio={436.15 / 79.03}>
+        <img src={minsungLogo} alt="Minsung Cho Design" style={{ width: "100%", height: "100%", objectFit: "contain" }} />
       </ExploreLogoLink>
     </div>
   );
