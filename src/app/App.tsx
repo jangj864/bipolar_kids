@@ -222,7 +222,7 @@ function GlitchTitle() {
   return (
     <div className="flex flex-col gap-0 leading-none">
       <GlitchLine text="5th Ave" size="text-3xl md:text-4xl" spacing="0.2em" />
-      <GlitchLine text="BIPOLAR KIDS" size="text-7xl md:text-9xl" spacing="0.08em" />
+      <GlitchLine text="BIPOLAR KIDS" size="text-[clamp(2rem,8vw,6rem)]" spacing="0.08em" />
     </div>
   );
 }
@@ -1352,7 +1352,7 @@ function EventsTab({ events, setEvents }: { events: EventData[]; setEvents: Reac
 function AboutTab() {
   return (
     <div className="space-y-8 max-w-2xl">
-      <div className="flex items-center gap-6">
+      <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 sm:gap-6">
         <div className="relative flex-shrink-0" style={{ width: 110, height: 110, filter: "invert(1) sepia(1) saturate(5) hue-rotate(90deg)", opacity: 0.85 }}>
           <LogoSvg />
         </div>
@@ -1385,7 +1385,7 @@ function AboutTab() {
         </p>
       </div>
 
-      <div className="grid grid-cols-2 gap-3 font-['Share_Tech_Mono']">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 font-['Share_Tech_Mono']">
         {[
           { label: "LOCATION", value: "Seoul / Daegu / New York" },
           { label: "FOUNDED", value: "2026" },
@@ -1401,7 +1401,7 @@ function AboutTab() {
 
       <div className="border p-5 font-['Share_Tech_Mono']" style={{ borderColor: `${PRIMARY}30`, background: "rgba(0,0,0,0.6)", backdropFilter: "blur(12px)", WebkitBackdropFilter: "blur(12px)" }}>
         <div className="text-xs mb-4" style={{ color: `${PRIMARY}60` }}>■ CONTACT // SECURE CHANNEL</div>
-        <div className="flex items-center justify-between">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
           <div>
             <div className="text-xs mb-1" style={{ color: `${PRIMARY}50` }}>EMAIL</div>
             <a
@@ -1497,7 +1497,7 @@ function CalendarTab({ events, calEvents, setCalEvents }: { events: EventData[];
           const totalRows = cells.length / 7;
           return (
             <div key={i}
-              className="min-h-[88px] p-2 flex flex-col transition-colors duration-150"
+              className="min-w-0 min-h-[72px] sm:min-h-[88px] p-1 sm:p-2 flex flex-col transition-colors duration-150"
               style={{
                 background: isToday ? "rgba(0,255,65,0.10)" : day ? "rgba(0,255,65,0.02)" : "transparent",
                 borderRight: col < 6 ? `1px solid ${PRIMARY}20` : "none",
@@ -1693,7 +1693,7 @@ export default function App() {
 
   return (
     <div
-      className="min-h-screen bg-background text-foreground overflow-x-hidden font-['Share_Tech_Mono'] relative"
+      className="site-shell min-h-screen bg-background text-foreground overflow-x-hidden font-['Share_Tech_Mono'] relative"
       onClick={page === "boot" ? () => setPage("auth") : undefined}
     >
       <MatrixRain />
@@ -1704,15 +1704,15 @@ export default function App() {
         backgroundSize: "150px",
       }} />
 
-      <div className="relative z-20 max-w-5xl mx-auto px-4 py-8">
-        <header className="mb-8 flex items-start justify-between">
+      <div className="relative z-20 max-w-5xl mx-auto px-3 sm:px-4 py-5 sm:py-8">
+        <header className="mb-6 sm:mb-8 flex flex-col md:flex-row gap-4 items-start justify-between">
           <div onClick={() => page !== "boot" && setPage("auth")} className={page !== "boot" ? "cursor-pointer" : ""}>
             <GlitchTitle />
             <div className="text-xs mt-2" style={{ color: `${PRIMARY}50` }}>
               {page === "crew" ? "CREW // CLASSIFIED MANIFEST" : "ANONYMOUS NETWORK ACCESS POINT v0.0.1-SHADOW"}
             </div>
           </div>
-          <div className="text-right text-xs space-y-1" style={{ color: `${PRIMARY}40` }}>
+          <div className="flex md:block gap-3 text-left md:text-right text-xs md:space-y-1 shrink-0" style={{ color: `${PRIMARY}40` }}>
             <div>[ENCRYPTED]</div>
             <div>TOR: ACTIVE</div>
             <div className="animate-pulse" style={{ color: DANGER }}>● LIVE</div>
@@ -1802,7 +1802,7 @@ export default function App() {
               </div>
             </div>
 
-            <div className="flex border-b" style={{
+            <nav aria-label="Main navigation" className="grid grid-cols-3 sm:grid-cols-6 border-b" style={{
               borderColor: `${PRIMARY}30`,
               background: "rgba(0,0,0,0.75)",
               backdropFilter: "blur(20px)",
@@ -1818,7 +1818,8 @@ export default function App() {
                 { id: "explore", label: "EXPLORE" },
               ].map((tab) => (
                 <button key={tab.id} onClick={() => setActiveTab(tab.id)}
-                  className="px-6 py-2 text-xs tracking-widest transition-all duration-200"
+                  aria-current={activeTab === tab.id ? "page" : undefined}
+                  className="min-w-0 min-h-11 px-1 sm:px-2 py-3 text-[11px] sm:text-xs tracking-wide sm:tracking-widest transition-all duration-200"
                   style={{
                     color: activeTab === tab.id ? PRIMARY : `${PRIMARY}55`,
                     borderBottom: activeTab === tab.id ? `2px solid ${PRIMARY}` : "2px solid transparent",
@@ -1828,7 +1829,7 @@ export default function App() {
                   {tab.label}
                 </button>
               ))}
-            </div>
+            </nav>
 
             {activeTab === "projects" && <ProjectsTab projects={projects} setProjects={setProjects} />}
             {activeTab === "members" && (

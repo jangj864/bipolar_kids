@@ -1,3 +1,50 @@
 @import './fonts.css';
 @import './tailwind.css';
 @import './theme.css';
+
+.site-shell {
+  overflow-wrap: anywhere;
+}
+
+.site-shell :where(.grid > *, .flex > *) {
+  min-width: 0;
+}
+
+@media (max-width: 639px) {
+  .site-shell input:not([type='color']),
+  .site-shell textarea,
+  .site-shell select {
+    font-size: 16px !important;
+  }
+
+  .site-shell button {
+    touch-action: manipulation;
+  }
+
+  .site-shell .fixed.inset-0 > .max-w-lg,
+  .site-shell .fixed.inset-0 > .max-w-3xl,
+  .site-shell .fixed.inset-0 > .max-w-sm {
+    max-height: calc(100dvh - 2rem) !important;
+    overflow-y: auto;
+  }
+
+  .site-shell .overflow-y-auto.flex-1 {
+    min-height: 0;
+  }
+
+  .site-shell .grid-cols-7 .tracking-widest {
+    letter-spacing: 0;
+    font-size: 10px;
+  }
+
+  .site-shell .text-xs.flex.justify-between {
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+}
+
+@media (hover: none) {
+  .site-shell .group > .opacity-0 {
+    opacity: 1;
+  }
+}
