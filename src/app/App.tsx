@@ -1109,6 +1109,33 @@ function CreditsFormSection({ draft, editedBy, c, s, setDraft, setEditedBy }: {
 const PROJECT_STATUS_OPTIONS_LIST = ["ACTIVE","ONGOING","COMPLETED","DORMANT","CANCELLED"];
 const EVENT_STATUS_OPTIONS = ["TBD", "SCHEDULED", "CONFIRMED", "ONGOING", "PAST", "CANCELLED"];
 
+function ColorEditor({ color, onChange }: { color: string; onChange: (color: string) => void }) {
+  const [hex, setHex] = useState(color);
+  const s = editorStyles(color);
+  useEffect(() => setHex(color), [color]);
+  const choose = (value: string) => { setHex(value); onChange(value); };
+  const valid = /^#[0-9a-f]{6}$/i.test(hex);
+  return (
+    <div>
+      <label style={s.label}>COLOR</label>
+      <div className="flex items-center gap-3">
+        <input type="color" aria-label="Choose any color" value={color} onChange={e => choose(e.target.value)} className="w-12 h-11 shrink-0 cursor-pointer" style={{ background: "transparent", border: `1px solid ${color}60` }} />
+        <input aria-label="Color HEX code" value={hex} maxLength={7} onChange={e => {
+          const value = e.target.value;
+          setHex(value);
+          if (/^#[0-9a-f]{6}$/i.test(value)) onChange(value.toLowerCase());
+        }} onBlur={() => { if (!valid) setHex(color); }} style={s.input} placeholder="#ff44aa" spellCheck={false} />
+      </div>
+      <div className="flex flex-wrap gap-2 mt-3">
+        {COLOR_PALETTE_FULL.map(value => (
+          <button key={value} type="button" aria-label={`Use color ${value}`} aria-pressed={color.toLowerCase() === value} onClick={() => choose(value)} className="w-9 h-9" style={{ background: value, border: color.toLowerCase() === value ? "3px solid white" : "3px solid transparent" }} />
+        ))}
+      </div>
+      <div className="text-xs mt-2" style={{ color }}>Updates the card, text, borders, tags, and glow.</div>
+    </div>
+  );
+}
+
 function ProjectEditor({ project, onSave, onClose }: { project: Project; onSave: (p: Project) => void; onClose: () => void }) {
   const [draft, setDraft] = useState<Project>({ ...project });
   const [editedBy, setEditedBy] = useState("");
@@ -1125,7 +1152,8 @@ function ProjectEditor({ project, onSave, onClose }: { project: Project; onSave:
         </div>
         <div className="overflow-y-auto flex-1 p-5 space-y-4">
           <ImageUploader current={draft.poster} color={c} onChange={url=>setDraft(d=>({...d,poster:url}))}/>
-          {([{key:"title",label:"TITLE"},{key:"category",label:"CATEGORY"},{key:"year",label:"YEAR"},{key:"color",label:"COLOR (hex)"}] as {key:keyof Project;label:string}[]).map(({key,label})=>(
+          <ColorEditor color={c} onChange={color=>setDraft(d=>({...d,color}))}/>
+          {([{key:"title",label:"TITLE"},{key:"category",label:"CATEGORY"},{key:"year",label:"YEAR"}] as {key:keyof Project;label:string}[]).map(({key,label})=>(
             <div key={key}><label style={s.label}>{label}</label><input value={(draft[key] as string)||""} onChange={e=>up(key,e.target.value)} style={s.input}/></div>
           ))}
           <div>
@@ -1163,7 +1191,8 @@ function EventEditor({ event, onSave, onClose }: { event: EventData; onSave: (e:
         </div>
         <div className="overflow-y-auto flex-1 p-5 space-y-4">
           <ImageUploader current={draft.poster} color={c} onChange={url=>setDraft(d=>({...d,poster:url}))}/>
-          {(["title","date","location","color"] as (keyof EventData)[]).map(key=>(
+          <ColorEditor color={c} onChange={color=>setDraft(d=>({...d,color}))}/>
+          {(["title","date","location"] as (keyof EventData)[]).map(key=>(
             <div key={key}><label style={s.label}>{String(key).toUpperCase()}</label><input value={(draft[key] as string)||""} onChange={e=>up(key,e.target.value)} style={s.input}/></div>
           ))}
           <div>
@@ -1202,17 +1231,17 @@ function ProjectsTab({ projects, setProjects }: { projects: Project[]; setProjec
         {[...projects].reverse().map((p) => (
           <div key={p.code} className="relative group flex flex-col">
             <ProjectCard project={p} />
-            {admin && <div className="flex gap-0 opacity-0 group-hover:opacity-100 transition-opacity duration-200" style={{ borderTop: `1px solid ${p.color}20` }}>
+            {admin && <div className="flex gap-0" style={{ borderTop: `1px solid ${p.color}20` }}>
               <button
                 onClick={e => { e.stopPropagation(); setEditingProject(p); setIsAddingProject(false); }}
-                className="flex-1 py-1.5 text-xs font-['Share_Tech_Mono'] transition-all"
+                className="flex-1 min-h-11 py-2 text-xs font-['Share_Tech_Mono'] transition-all"
                 style={{ border: "none", borderRight: `1px solid ${p.color}20`, color: p.color + "80", background: p.color + "08" }}
                 onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.background = p.color + "18"; (e.currentTarget as HTMLButtonElement).style.color = p.color; }}
                 onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.background = p.color + "08"; (e.currentTarget as HTMLButtonElement).style.color = p.color + "80"; }}
               >[ EDIT ]</button>
               <button
                 onClick={e => { e.stopPropagation(); if(confirm("Delete this project?")) setProjects(ps => ps.filter(x => x.code !== p.code)); }}
-                className="flex-1 py-1.5 text-xs font-['Share_Tech_Mono'] transition-all"
+                className="flex-1 min-h-11 py-2 text-xs font-['Share_Tech_Mono'] transition-all"
                 style={{ border: "none", color: `${DANGER}70`, background: "#ff000308" }}
                 onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.background = "#ff003318"; (e.currentTarget as HTMLButtonElement).style.color = DANGER; }}
                 onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.background = "#ff000308"; (e.currentTarget as HTMLButtonElement).style.color = `${DANGER}70`; }}
@@ -1294,17 +1323,17 @@ function EventsTab({ events, setEvents }: { events: EventData[]; setEvents: Cont
         {[...events].reverse().map((event) => (
           <div key={event.code} className="relative group flex flex-col">
             <EventCard event={event} />
-            {admin && <div className="flex gap-0 opacity-0 group-hover:opacity-100 transition-opacity duration-200" style={{ borderTop: `1px solid ${event.color}20` }}>
+            {admin && <div className="flex gap-0" style={{ borderTop: `1px solid ${event.color}20` }}>
               <button
                 onClick={e => { e.stopPropagation(); setEditingEvent(event); setIsAddingEvent(false); }}
-                className="flex-1 py-1.5 text-xs font-['Share_Tech_Mono'] transition-all"
+                className="flex-1 min-h-11 py-2 text-xs font-['Share_Tech_Mono'] transition-all"
                 style={{ border: "none", borderRight: `1px solid ${event.color}20`, color: event.color + "80", background: event.color + "08" }}
                 onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.background = event.color + "18"; (e.currentTarget as HTMLButtonElement).style.color = event.color; }}
                 onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.background = event.color + "08"; (e.currentTarget as HTMLButtonElement).style.color = event.color + "80"; }}
               >[ EDIT ]</button>
               <button
                 onClick={e => { e.stopPropagation(); if(confirm("Delete this event?")) setEvents(evs => evs.filter(x => x.code !== event.code)); }}
-                className="flex-1 py-1.5 text-xs font-['Share_Tech_Mono'] transition-all"
+                className="flex-1 min-h-11 py-2 text-xs font-['Share_Tech_Mono'] transition-all"
                 style={{ border: "none", color: `${DANGER}70`, background: "#ff000308" }}
                 onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.background = "#ff003318"; (e.currentTarget as HTMLButtonElement).style.color = DANGER; }}
                 onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.background = "#ff000308"; (e.currentTarget as HTMLButtonElement).style.color = `${DANGER}70`; }}
