@@ -1587,7 +1587,7 @@ function CalendarTab({ events, calEvents, setCalEvents }: { events: EventData[];
               <button onClick={saveCal} className="flex-1 py-2 font-['VT323'] text-lg tracking-widest transition-all"
                 style={{ border:`1px solid ${calDraft.color}60`, color:calDraft.color, background:calDraft.color+"15" }}>SAVE</button>
               {calModal.event && (
-                <button onClick={() => { deleteCal(calModal.event!.id); setCalModal(null); }}
+                <button onClick={async () => { if (await deleteCal(calModal.event!.id)) setCalModal(null); }}
                   className="px-4 py-2 font-['VT323'] text-lg tracking-widest transition-all"
                   style={{ border:`1px solid ${DANGER}50`, color: DANGER, background:`${DANGER}10` }}>DEL</button>
               )}
@@ -1666,6 +1666,7 @@ export default function App() {
 }
 
 function Site() {
+  const admin = useAdmin();
   const [page, setPage] = useState<Page>("boot");
   const [activeTab, setActiveTab] = useState("projects");
   const memberStore = useServerContent<Member>("members", INITIAL_MEMBERS.map(m => ({ ...m, avatarKey: m.codename })), items => items.map(m => {
@@ -1809,10 +1810,10 @@ function Site() {
               backdropFilter: "blur(12px)", WebkitBackdropFilter: "blur(12px)",
             }}>
               <div className="font-['VT323'] text-4xl mb-1" style={{ color: PRIMARY, textShadow: `0 0 20px ${PRIMARY}` }}>
-                [ CLASSIFIED ACCESS GRANTED ]
+                {admin ? "[ ADMIN ACCESS GRANTED ]" : "[ WELCOME, VISITOR ]"}
               </div>
               <div className="text-xs" style={{ color: `${PRIMARY}50` }}>
-                IDENTITY CONFIRMED: BIPOLAR KIDS // CLEARANCE LEVEL: FULL
+                {admin ? "BIPOLAR KIDS // EDITING ENABLED" : "BIPOLAR KIDS // VIEW ONLY"}
               </div>
             </div>
 
@@ -1846,7 +1847,7 @@ function Site() {
             </nav>
 
             {stores.some(store => store.busy) && <p role="status" className="text-xs" style={{ color: PRIMARY }}>Saving to server…</p>}
-            {stores.filter(store => store.error).map((store, index) => <p key={index} role="alert" className="text-xs" style={{ color: DANGER }}>{store.error}</p>)}
+            {stores.filter(store => store.error).map((store, index) => <p key={index} role="alert" className="fixed bottom-4 left-4 right-4 z-[120] border bg-black p-3 text-xs" style={{ color: DANGER }}>{store.error}</p>)}
             <fieldset disabled={stores.some(store => store.busy)} className="border-0 p-0 m-0 min-w-0">
             {activeTab === "projects" && <ProjectsTab projects={projects} setProjects={setProjects} />}
             {activeTab === "members" && (
