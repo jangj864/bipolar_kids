@@ -39,7 +39,7 @@ type CalEvent = { id: string; date: string; title: string; desc: string; color: 
 
 function buildEditLog(existing: EditLogEntry[], by: string): EditLogEntry[] {
   if (!by.trim()) return existing;
-  const now = new Date().toLocaleString("ko-KR", { timeZone: TZ, year: "numeric", month: "2-digit", day: "2-digit", hour: "2-digit", minute: "2-digit" });
+  const now = new Date().toLocaleString("en-US", { timeZone: TZ, year: "numeric", month: "2-digit", day: "2-digit", hour: "2-digit", minute: "2-digit" });
   return [...existing, { by: by.trim(), at: now }];
 }
 
@@ -660,7 +660,7 @@ function ProjectCard({ project }: { project: Project }) {
           </div>
           <div className="text-xs leading-relaxed mb-3" style={{ color: project.color + "90" }}>{project.desc}</div>
           <TagList tags={project.tags} color={project.color} />
-          <div className="text-xs mt-3" style={{ color: project.color + "40" }}>[ 클릭하여 상세 보기 ▼ ]</div>
+          <div className="text-xs mt-3" style={{ color: project.color + "40" }}>[ CLICK TO VIEW DETAILS ▼ ]</div>
         </div>
       </div>
 
@@ -734,7 +734,7 @@ function EventCard({ event }: { event: EventData }) {
           </div>
           <div className="text-xs leading-relaxed mb-4" style={{ color: event.color + "90" }}>{event.desc}</div>
           <TagList tags={event.tags} color={event.color} />
-          <div className="text-xs mt-3" style={{ color: event.color + "50" }}>[ 클릭하여 상세 보기 ▼ ]</div>
+          <div className="text-xs mt-3" style={{ color: event.color + "50" }}>[ CLICK TO VIEW DETAILS ▼ ]</div>
         </div>
       </div>
 
@@ -744,7 +744,7 @@ function EventCard({ event }: { event: EventData }) {
             <div>
               {event.poster ? (
                 <div className="relative" style={{ border: `1px solid ${event.color}30` }}>
-                  <img src={event.poster} alt={event.title + " 포스터"} className="w-full object-contain" />
+                  <img src={event.poster} alt={event.title + " poster"} className="w-full object-contain" />
                   <div className="absolute inset-0 pointer-events-none" style={{ background: "repeating-linear-gradient(0deg, transparent, transparent 3px, rgba(0,0,0,0.06) 3px, rgba(0,0,0,0.06) 4px)" }} />
                 </div>
               ) : (
@@ -771,19 +771,19 @@ function EventCard({ event }: { event: EventData }) {
 const PROJECTS: Project[] = [
   {
     code: "PRJ-001",
-    title: "기린대학교",
+    title: "Girin University",
     category: "INSTITUTION",
-    desc: "비인가 교육기관으로, 커리큘럼을 제공하지 않습니다.",
+    desc: "An unaccredited educational institution. No curriculum provided.",
     status: "ACTIVE",
     year: "2026—",
     color: "#00ff41",
     tags: ["collective", "school", "experiment", "underground"],
     poster: null,
     details: [
-      { label: "성격", value: "비공식 집단 학교 — 커리큘럼 없음, 출석 없음, 졸업 없음" },
-      { label: "구성원", value: "5th Ave Bipolar Kids 전 멤버" },
-      { label: "활동", value: "독서모임, 영화감상회, 리스닝 파티, 비정기 세션" },
-      { label: "상태", value: "상시 운영 중" },
+      { label: "FORMAT", value: "An informal collective school — no curriculum, no attendance, no graduation" },
+      { label: "MEMBERS", value: "All members of 5th Ave Bipolar Kids" },
+      { label: "ACTIVITIES", value: "Book clubs, film screenings, listening parties, and occasional sessions" },
+      { label: "STATUS", value: "Always active" },
     ],
     author: "5th Ave Bipolar Kids",
     organizer: "",
@@ -932,7 +932,7 @@ const INITIAL_MEMBERS: Member[] = [
     role: "PRODUCER / ENGINEER",
     instagram: "je5b179",
     contact: "N/A",
-    bio: "팀장님 또 바뀜",
+    bio: "Another new team leader",
     color: "#ff6600",
     customAvatar: JunseoAvatar,
     avatarAspect: 1.012,
@@ -942,7 +942,7 @@ const INITIAL_MEMBERS: Member[] = [
     role: "STYLIST / ART DIRECTOR",
     instagram: "mingyuboi",
     contact: "N/A",
-    bio: "남친 크롬하츠로 우빵잡지마라",
+    bio: "Don't flex your boyfriend's Chrome Hearts",
     color: "#ff88ff",
     customAvatar: MingyuAvatar,
     avatarAspect: 0.865,
@@ -962,7 +962,7 @@ const INITIAL_MEMBERS: Member[] = [
     role: "NAHYUNG KIM",
     instagram: "nauunz",
     contact: "N/A",
-    bio: "8월에 실습나감",
+    bio: "Starting an internship in August",
     color: "#ff88aa",
     customAvatar: DanaAvatar,
   },
@@ -981,11 +981,11 @@ const INITIAL_MEMBERS: Member[] = [
 const INITIAL_EVENTS: EventData[] = [
   {
     code: "EVT-001",
-    title: "Untitled",
-    date: "",
-    location: "",
-    desc: "",
-    status: "",
+    title: "1sr 2026 NYC Party",
+    date: "TBD",
+    location: "New York City",
+    desc: "Date and details to be announced.",
+    status: "TBD",
     color: "#00ff41",
     tags: [],
     poster: null,
@@ -1083,20 +1083,20 @@ function CreditsFormSection({ draft, editedBy, c, s, setDraft, setEditedBy }: {
       <div style={{ borderTop:`1px solid ${c}15`, paddingTop:"12px" }}>
         <div className="text-xs mb-3" style={{ color:c+"40" }}>// CREDITS</div>
         <div className="space-y-3">
-          <div><label style={s.label}>AUTHOR (작성자)</label><input value={draft.author||""} onChange={e=>setDraft(d=>({...d,author:e.target.value}))} style={s.input} placeholder="이름"/></div>
-          <div><label style={s.label}>ORGANIZER (주최자)</label><input value={draft.organizer||""} onChange={e=>setDraft(d=>({...d,organizer:e.target.value}))} style={s.input} placeholder="이름 또는 단체"/></div>
+          <div><label style={s.label}>AUTHOR</label><input value={draft.author||""} onChange={e=>setDraft(d=>({...d,author:e.target.value}))} style={s.input} placeholder="Name"/></div>
+          <div><label style={s.label}>ORGANIZER</label><input value={draft.organizer||""} onChange={e=>setDraft(d=>({...d,organizer:e.target.value}))} style={s.input} placeholder="Name or organization"/></div>
         </div>
       </div>
       <div style={{ borderTop:`1px solid ${c}15`, paddingTop:"12px" }}>
-        <div className="text-xs mb-3" style={{ color:c+"40" }}>// EDIT LOG — 저장 시 기록됩니다</div>
-        <div><label style={s.label}>EDITED BY</label><input value={editedBy} onChange={e=>setEditedBy(e.target.value)} style={s.input} placeholder="수정한 사람 이름 (비워두면 기록 안됨)"/></div>
+        <div className="text-xs mb-3" style={{ color:c+"40" }}>// EDIT LOG — RECORDED ON SAVE</div>
+        <div><label style={s.label}>EDITED BY</label><input value={editedBy} onChange={e=>setEditedBy(e.target.value)} style={s.input} placeholder="Editor name (leave blank to skip logging)"/></div>
       </div>
     </>
   );
 }
 
 const PROJECT_STATUS_OPTIONS_LIST = ["ACTIVE","ONGOING","COMPLETED","DORMANT","CANCELLED"];
-const EVENT_STATUS_OPTIONS = ["SCHEDULED", "CONFIRMED", "ONGOING", "PAST", "CANCELLED"];
+const EVENT_STATUS_OPTIONS = ["TBD", "SCHEDULED", "CONFIRMED", "ONGOING", "PAST", "CANCELLED"];
 
 function ProjectEditor({ project, onSave, onClose }: { project: Project; onSave: (p: Project) => void; onClose: () => void }) {
   const [draft, setDraft] = useState<Project>({ ...project });
@@ -1255,7 +1255,7 @@ function MembersTab({ members, setMembers, editingMemberIdx, setEditingMemberIdx
         ))}
       </div>
       <div className="text-xs text-center mt-6" style={{ color: `${PRIMARY}30` }}>
-        ※ 인스타그램 ID 및 연락처는 실제 정보로 교체하세요
+        Replace Instagram handles and contact details with current information.
       </div>
       {editingMemberIdx !== null && (
         <MemberEditor
@@ -1339,17 +1339,17 @@ function AboutTab() {
 
       <div className="space-y-3 font-['Share_Tech_Mono'] text-xs leading-relaxed" style={{ borderLeft: `2px solid ${PRIMARY}25`, paddingLeft: "1.25rem" }}>
         <p style={{ color: PRIMARY }}>
-          5th Ave Bipolar Kids는 서울, 대구, 뉴욕을 거점으로 활동하는 언더그라운드 크리에이티브 콜렉티브다.
-          음악, 시각예술, 텍스트, 디자인, 퍼포먼스 등 장르의 경계를 넘나들며 다양한 형태의 작업을 이어간다.
+          5th Ave Bipolar Kids is an underground creative collective based in Seoul, Daegu, and New York.
+          We work across music, visual art, writing, design, and performance, crossing boundaries between genres.
         </p>
         <p style={{ color: `${PRIMARY}80` }}>
-          2026년 밴드로 결성되었다. 그러나 저조한 플레이어 참여와 악기 연주자의 부재로, 어느새 연주자보다 스태프가 더 많은 밴드가 되었다.
-          결성 3개월이 지난 지금도 제대로 된 EP는 없고, 스태프는 여전히 연주자보다 많다.
-          굿즈는 꾸준히 제작하지만 구매자는 없으며, 판매자 역시 판매할 생각이 없다.
+          Founded as a band in 2026, we somehow ended up with more staff than musicians, thanks to low participation and a shortage of instrumentalists.
+          Three months in, we still have no proper EP, and the staff still outnumber the players.
+          We keep making merch with no buyers, and the sellers have no intention of selling it either.
         </p>
         <p style={{ color: `${PRIMARY}60` }}>
-          그럼에도 활동은 멈추지 않는다. 5th Ave Bipolar Kids는 밴드라는 정체성을 출발점으로 삼아
-          음악과 시각예술, 디자인, 출판, 퍼포먼스를 아우르는 종합예술 커뮤니티로 스스로의 영역을 확장해 나가고 있다.
+          Still, we keep going. Starting from our identity as a band, 5th Ave Bipolar Kids
+          is growing into an arts community spanning music, visual art, design, publishing, and performance.
         </p>
       </div>
 
@@ -1388,7 +1388,7 @@ function AboutTab() {
           </div>
         </div>
         <div className="mt-4 text-xs" style={{ color: `${PRIMARY}30`, borderTop: `1px solid ${PRIMARY}15`, paddingTop: "0.75rem" }}>
-          // 비즈니스 문의, 콜라보레이션, 그 외 모든 것
+          // BUSINESS INQUIRIES, COLLABORATIONS, AND EVERYTHING ELSE
         </div>
       </div>
     </div>
@@ -1490,7 +1490,7 @@ function CalendarTab({ events, calEvents, setCalEvents }: { events: EventData[];
                         className="px-1.5 py-0.5 truncate leading-tight cursor-pointer hover:opacity-80 transition-opacity"
                         style={{ background: ev.color+"28", color: ev.color, borderLeft:`2px solid ${ev.color}`, fontFamily:"'Share Tech Mono',monospace", fontSize:"11px" }}
                         onClick={e => { e.stopPropagation(); if (!ev.isScheduled) { const c = calEvents.find(ce => ce.id === ev.id); if (c) openEditCal(c); } }}
-                        title={ev.isScheduled ? "Events 탭에서 확인" : "클릭하여 수정"}
+                        title={ev.isScheduled ? "View in the Events tab" : "Click to edit"}
                       >
                         {ev.isScheduled && <span style={{ opacity:0.6, marginRight:3 }}>◆</span>}{ev.title}
                       </div>
@@ -1503,7 +1503,7 @@ function CalendarTab({ events, calEvents, setCalEvents }: { events: EventData[];
         })}
       </div>
 
-      <div className="mt-3 text-xs" style={{ color:`${PRIMARY}40`, fontFamily:"'Share Tech Mono',monospace" }}>// 날짜 클릭하여 일정 추가 · 일정 클릭하여 수정/삭제</div>
+      <div className="mt-3 text-xs" style={{ color:`${PRIMARY}40`, fontFamily:"'Share Tech Mono',monospace" }}>// CLICK A DATE TO ADD AN ENTRY · CLICK AN ENTRY TO EDIT OR DELETE</div>
 
       {calModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4" style={{ background:"rgba(0,0,0,0.85)" }} onClick={() => setCalModal(null)}>
@@ -1524,7 +1524,7 @@ function CalendarTab({ events, calEvents, setCalEvents }: { events: EventData[];
                 onKeyDown={e => e.key === "Enter" && saveCal()}
                 className="w-full bg-transparent outline-none py-1.5 font-['VT323'] text-xl tracking-wider"
                 style={{ borderBottom:`1px solid ${PRIMARY}35`, color: PRIMARY, caretColor: PRIMARY }}
-                placeholder="일정 제목"
+                placeholder="Event title"
               />
             </div>
 
@@ -1536,7 +1536,7 @@ function CalendarTab({ events, calEvents, setCalEvents }: { events: EventData[];
                 rows={2}
                 className="w-full bg-transparent outline-none py-1.5 font-['Share_Tech_Mono'] text-sm resize-none"
                 style={{ borderBottom:`1px solid ${PRIMARY}20`, color:`${PRIMARY}90`, caretColor: PRIMARY }}
-                placeholder="메모 (선택)"
+                placeholder="Notes (optional)"
               />
             </div>
 
