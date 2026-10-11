@@ -1,4 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
+import { backend, loginWithPin } from "./backend";
+import { AdminProvider, useAdmin } from "./Admin";
+import { useServerContent, type ContentSetter } from "./useServerContent";
 import LogoSvg from "@/imports/Group1-1/index";
 import svgPaths from "@/imports/Group1-1/svg-yxzi5u9lke";
 import JinhyeokAvatar from "@/imports/Layer1/index";
@@ -260,23 +263,27 @@ function AccessPanel({ onAccess, onDeny }: { onAccess: (isSecret: boolean) => vo
   const [shake, setShake] = useState(false);
   const [scanning, setScanning] = useState(false);
 
-  const handleSubmit = () => {
-    setScanning(true);
-    setTimeout(() => {
-      setScanning(false);
-      const lower = code.toLowerCase().trim();
-      if (lower === "bipolar kids") {
-        onAccess(true);
-      } else if (code === "0000") {
-        onAccess(true);
-      } else {
-        setAttempt((a) => a + 1);
-        setShake(true);
-        setCode("");
-        setTimeout(() => setShake(false), 500);
-        if (attempt >= 2) onDeny();
-      }
-    }, 1500);
+  const [loginError, setLoginError] = useState("");
+  const handleSubmit = async () => {
+    if (scanning) return;
+    setScanning(true); setLoginError("");
+    try {
+      await loginWithPin(code);
+      onAccess(true);
+    } catch (error) {
+      setAttempt(a => a + 1); setShake(true);
+      setLoginError(error instanceof Error ? error.message : "Login failed.");
+      setTimeout(() => setShake(false), 500);
+    } finally { setScanning(false); }
+  };
+  const enterVisitor = async () => {
+    if (scanning) return;
+    setScanning(true); setLoginError("");
+    try {
+      if (backend) { const result = await backend.auth.signOut(); if (result.error) throw result.error; }
+      onAccess(true);
+    } catch { setLoginError("Could not leave administrator mode. Please try again."); }
+    finally { setScanning(false); }
   };
 
   return (
@@ -286,11 +293,9 @@ function AccessPanel({ onAccess, onDeny }: { onAccess: (isSecret: boolean) => vo
       backdropFilter: "blur(12px)", WebkitBackdropFilter: "blur(12px)",
       boxShadow: attempt > 0 ? `0 0 30px ${DANGER}30` : `0 0 30px ${PRIMARY}10`,
     }}>
-      <div className="text-xs mb-4" style={{ color: `${PRIMARY}60` }}>■ AUTHORIZATION REQUIRED ■</div>
+      <div className="text-xs mb-4" style={{ color: `${PRIMARY}60` }}>■ WELCOME // CHOOSE ACCESS ■</div>
       <div className="text-xs mb-6" style={{ color: attempt > 0 ? DANGER : `${PRIMARY}90` }}>
-        {attempt === 0 && "ENTER ACCESS CODE TO CONTINUE"}
-        {attempt === 1 && ">> INVALID CODE. 2 ATTEMPTS REMAINING"}
-        {attempt === 2 && ">> SECURITY BREACH DETECTED. FINAL ATTEMPT"}
+        ENTER ADMIN CODE OR CONTINUE AS A VISITOR
       </div>
       <input
         type="password"
@@ -309,9 +314,10 @@ function AccessPanel({ onAccess, onDeny }: { onAccess: (isSecret: boolean) => vo
           style={{ background: attempt > 1 ? `${DANGER}20` : `${PRIMARY}15`, border: `1px solid ${attempt > 1 ? `${DANGER}80` : `${PRIMARY}50`}`, color: attempt > 1 ? DANGER : PRIMARY }}
           onMouseEnter={(e) => { (e.currentTarget).style.background = attempt > 1 ? `${DANGER}40` : `${PRIMARY}30`; }}
           onMouseLeave={(e) => { (e.currentTarget).style.background = attempt > 1 ? `${DANGER}20` : `${PRIMARY}15`; }}
-        >[ AUTHENTICATE ]</button>
+        >[ ENTER AS ADMIN ]</button>
       )}
-      <div className="mt-4 text-center text-xs" style={{ color: `${PRIMARY}30` }}>ENTER NUMERIC CODE // WORDS ALSO ACCEPTED</div>
+      <button type="button" disabled={scanning} onClick={enterVisitor} className="w-full min-h-11 mt-3 border px-3 py-2 text-sm" style={{ color: PRIMARY, borderColor: PRIMARY + "40" }}>[ ENTER AS VISITOR ]</button>
+      {loginError && <p role="alert" className="mt-3 text-xs" style={{ color: DANGER }}>{loginError}</p>}
     </div>
   );
 }
@@ -368,6 +374,8 @@ function ModalOverlay({ color, code, onClose, children }: { color: string; code:
 }
 
 function AddButton({ onClick, label = "+ ADD" }: { onClick: () => void; label?: string }) {
+  const admin = useAdmin();
+  if (!admin) return null;
   return (
     <button
       onClick={onClick}
@@ -482,6 +490,7 @@ function MemberEditor({ member, onSave, onClose }: { member: Member; onSave: (m:
 
 // ── Interfaces ────────────────────────────────────────────────────────────────
 interface Member {
+  avatarKey?: string;
   codename: string;
   role: string;
   instagram: string;
@@ -530,6 +539,7 @@ interface EventData {
 
 // ── Member card ───────────────────────────────────────────────────────────────
 function MemberCard({ member, onEdit, onDelete }: { member: Member; onEdit: () => void; onDelete: () => void }) {
+  const admin = useAdmin();
   const [hovered, setHovered] = useState(false);
   const [revealed, setRevealed] = useState(false);
   const [mouse, setMouse] = useState({ x: 0.5, y: 0.5 });
@@ -555,10 +565,10 @@ function MemberCard({ member, onEdit, onDelete }: { member: Member; onEdit: () =
     >
       <div className="flex items-center justify-between px-4 py-2 text-xs" style={{ borderBottom:`1px solid ${member.color}20` }}>
         <span className="font-['VT323'] text-base tracking-wider" style={{ color: member.color }}>{member.codename}</span>
-        <div className="flex gap-2">
+        {admin && <div className="flex gap-2">
           <button onClick={onEdit} className="text-xs px-2 py-0.5 transition-all hover:opacity-100 opacity-40" style={{ border:`1px solid ${member.color}50`, color: member.color, fontFamily:"'Share Tech Mono',monospace" }} title="Edit member">EDIT</button>
           <button onClick={e => { e.stopPropagation(); onDelete(); }} className="text-xs px-2 py-0.5 transition-all hover:opacity-100 opacity-40" style={{ border:`1px solid ${DANGER}50`, color: DANGER, fontFamily:"'Share Tech Mono',monospace" }}>DEL</button>
-        </div>
+        </div>}
       </div>
 
       <div className="flex flex-col items-center p-4 gap-4 flex-1">
@@ -1177,7 +1187,8 @@ function EventEditor({ event, onSave, onClose }: { event: EventData; onSave: (e:
 
 // ── Tab content components ────────────────────────────────────────────────────
 
-function ProjectsTab({ projects, setProjects }: { projects: Project[]; setProjects: React.Dispatch<React.SetStateAction<Project[]>> }) {
+function ProjectsTab({ projects, setProjects }: { projects: Project[]; setProjects: ContentSetter<Project> }) {
+  const admin = useAdmin();
   const [editingProject, setEditingProject] = useState<Project | null>(null);
   const [isAddingProject, setIsAddingProject] = useState(false);
 
@@ -1185,13 +1196,13 @@ function ProjectsTab({ projects, setProjects }: { projects: Project[]; setProjec
     <div className="space-y-4">
       <div className="flex items-center justify-between mb-2">
         <div className="text-xs" style={{ color: `${PRIMARY}40` }}>// {projects.length} PROJECTS FOUND IN MANIFEST</div>
-        <AddButton onClick={() => { setEditingProject({ code: `PRJ-${String(projects.length+1).padStart(3,"0")}`, title:"", category:"", desc:"", status:"ACTIVE", year:"2026", color: PRIMARY, tags:[], poster:null, details:[], author:"", organizer:"", editLog:[] }); setIsAddingProject(true); }} />
+        <AddButton onClick={() => { setEditingProject({ code: `PRJ-${crypto.randomUUID()}`, title:"", category:"", desc:"", status:"ACTIVE", year:"2026", color: PRIMARY, tags:[], poster:null, details:[], author:"", organizer:"", editLog:[] }); setIsAddingProject(true); }} />
       </div>
       <div className="grid md:grid-cols-2 gap-4">
         {[...projects].reverse().map((p) => (
           <div key={p.code} className="relative group flex flex-col">
             <ProjectCard project={p} />
-            <div className="flex gap-0 opacity-0 group-hover:opacity-100 transition-opacity duration-200" style={{ borderTop: `1px solid ${p.color}20` }}>
+            {admin && <div className="flex gap-0 opacity-0 group-hover:opacity-100 transition-opacity duration-200" style={{ borderTop: `1px solid ${p.color}20` }}>
               <button
                 onClick={e => { e.stopPropagation(); setEditingProject(p); setIsAddingProject(false); }}
                 className="flex-1 py-1.5 text-xs font-['Share_Tech_Mono'] transition-all"
@@ -1206,7 +1217,7 @@ function ProjectsTab({ projects, setProjects }: { projects: Project[]; setProjec
                 onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.background = "#ff003318"; (e.currentTarget as HTMLButtonElement).style.color = DANGER; }}
                 onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.background = "#ff000308"; (e.currentTarget as HTMLButtonElement).style.color = `${DANGER}70`; }}
               >[ DEL ]</button>
-            </div>
+            </div>}
           </div>
         ))}
       </div>
@@ -1214,9 +1225,9 @@ function ProjectsTab({ projects, setProjects }: { projects: Project[]; setProjec
         <ProjectEditor
           project={editingProject}
           onClose={() => { setEditingProject(null); setIsAddingProject(false); }}
-          onSave={updated => {
-            if (isAddingProject) setProjects(ps => [...ps, updated]);
-            else setProjects(ps => ps.map(p => p.code === updated.code ? updated : p));
+          onSave={async updated => {
+            const saved = await setProjects(ps => isAddingProject ? [...ps, updated] : ps.map(p => p.code === updated.code ? updated : p));
+            if (!saved) return;
             setEditingProject(null);
             setIsAddingProject(false);
           }}
@@ -1228,7 +1239,7 @@ function ProjectsTab({ projects, setProjects }: { projects: Project[]; setProjec
 
 function MembersTab({ members, setMembers, editingMemberIdx, setEditingMemberIdx, isAddingMember, setIsAddingMember }: {
   members: Member[];
-  setMembers: React.Dispatch<React.SetStateAction<Member[]>>;
+  setMembers: ContentSetter<Member>;
   editingMemberIdx: number | null;
   setEditingMemberIdx: React.Dispatch<React.SetStateAction<number | null>>;
   isAddingMember: boolean;
@@ -1240,7 +1251,6 @@ function MembersTab({ members, setMembers, editingMemberIdx, setEditingMemberIdx
         <div className="text-xs" style={{ color: `${PRIMARY}40` }}>// {members.length} ENTITIES IDENTIFIED — HOVER TO INTERACT</div>
         <AddButton onClick={() => {
           const newIdx = members.length;
-          setMembers(ms => [...ms, { codename:"NEW_MEMBER", role:"", instagram:"", contact:"N/A", bio:"", color: PRIMARY }]);
           setIsAddingMember(true);
           setEditingMemberIdx(newIdx);
         }} />
@@ -1260,16 +1270,17 @@ function MembersTab({ members, setMembers, editingMemberIdx, setEditingMemberIdx
       </div>
       {editingMemberIdx !== null && (
         <MemberEditor
-          member={members[editingMemberIdx]}
-          onSave={(updated) => { setMembers(ms => ms.map((x, i) => i === editingMemberIdx ? updated : x)); setEditingMemberIdx(null); setIsAddingMember(false); }}
-          onClose={() => { if (isAddingMember) setMembers(ms => ms.filter((_, i) => i !== editingMemberIdx)); setEditingMemberIdx(null); setIsAddingMember(false); }}
+          member={isAddingMember ? { codename:"NEW_MEMBER", role:"", instagram:"", contact:"N/A", bio:"", color: PRIMARY } : members[editingMemberIdx]}
+          onSave={async (updated) => { const saved = await setMembers(ms => isAddingMember ? [...ms, updated] : ms.map((x, i) => i === editingMemberIdx ? updated : x)); if (!saved) return; setEditingMemberIdx(null); setIsAddingMember(false); }}
+          onClose={() => { setEditingMemberIdx(null); setIsAddingMember(false); }}
         />
       )}
     </div>
   );
 }
 
-function EventsTab({ events, setEvents }: { events: EventData[]; setEvents: React.Dispatch<React.SetStateAction<EventData[]>> }) {
+function EventsTab({ events, setEvents }: { events: EventData[]; setEvents: ContentSetter<EventData> }) {
+  const admin = useAdmin();
   const [editingEvent, setEditingEvent] = useState<EventData | null>(null);
   const [isAddingEvent, setIsAddingEvent] = useState(false);
 
@@ -1277,13 +1288,13 @@ function EventsTab({ events, setEvents }: { events: EventData[]; setEvents: Reac
     <div className="space-y-4">
       <div className="flex items-center justify-between mb-2">
         <div className="text-xs" style={{ color: `${PRIMARY}40` }}>// {events.length} EVENTS SCHEDULED — COORDINATES CONFIRMED</div>
-        <AddButton onClick={() => { setEditingEvent({ code: `EVT-${String(events.length+1).padStart(3,"0")}`, title:"", date:"TBD", location:"", desc:"", status:"SCHEDULED", color: PRIMARY, tags:[], poster:null, details:[], author:"", organizer:"", editLog:[] }); setIsAddingEvent(true); }} />
+        <AddButton onClick={() => { setEditingEvent({ code: `EVT-${crypto.randomUUID()}`, title:"", date:"TBD", location:"", desc:"", status:"SCHEDULED", color: PRIMARY, tags:[], poster:null, details:[], author:"", organizer:"", editLog:[] }); setIsAddingEvent(true); }} />
       </div>
       <div className="grid md:grid-cols-1 gap-4 max-w-2xl">
         {[...events].reverse().map((event) => (
           <div key={event.code} className="relative group flex flex-col">
             <EventCard event={event} />
-            <div className="flex gap-0 opacity-0 group-hover:opacity-100 transition-opacity duration-200" style={{ borderTop: `1px solid ${event.color}20` }}>
+            {admin && <div className="flex gap-0 opacity-0 group-hover:opacity-100 transition-opacity duration-200" style={{ borderTop: `1px solid ${event.color}20` }}>
               <button
                 onClick={e => { e.stopPropagation(); setEditingEvent(event); setIsAddingEvent(false); }}
                 className="flex-1 py-1.5 text-xs font-['Share_Tech_Mono'] transition-all"
@@ -1298,7 +1309,7 @@ function EventsTab({ events, setEvents }: { events: EventData[]; setEvents: Reac
                 onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.background = "#ff003318"; (e.currentTarget as HTMLButtonElement).style.color = DANGER; }}
                 onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.background = "#ff000308"; (e.currentTarget as HTMLButtonElement).style.color = `${DANGER}70`; }}
               >[ DEL ]</button>
-            </div>
+            </div>}
           </div>
         ))}
       </div>
@@ -1306,9 +1317,9 @@ function EventsTab({ events, setEvents }: { events: EventData[]; setEvents: Reac
         <EventEditor
           event={editingEvent}
           onClose={() => { setEditingEvent(null); setIsAddingEvent(false); }}
-          onSave={updated => {
-            if (isAddingEvent) setEvents(evs => [...evs, updated]);
-            else setEvents(evs => evs.map(e => e.code === updated.code ? updated : e));
+          onSave={async updated => {
+            const saved = await setEvents(evs => isAddingEvent ? [...evs, updated] : evs.map(e => e.code === updated.code ? updated : e));
+            if (!saved) return;
             setEditingEvent(null);
             setIsAddingEvent(false);
           }}
@@ -1358,8 +1369,6 @@ function AboutTab() {
         {[
           { label: "LOCATION", value: "Seoul / Daegu / New York" },
           { label: "FOUNDED", value: "2026" },
-          { label: "STATUS", value: "ACTIVE" },
-          { label: "MEMBERS", value: "15" },
         ].map((item) => (
           <div key={item.label} className="p-3 border" style={{ borderColor: `${PRIMARY}20`, background: "rgba(0,0,0,0.55)", backdropFilter: "blur(8px)", WebkitBackdropFilter: "blur(8px)" }}>
             <div className="text-xs mb-1" style={{ color: `${PRIMARY}40` }}>{item.label}</div>
@@ -1415,7 +1424,8 @@ function AboutTab() {
   );
 }
 
-function CalendarTab({ events, calEvents, setCalEvents }: { events: EventData[]; calEvents: CalEvent[]; setCalEvents: React.Dispatch<React.SetStateAction<CalEvent[]>> }) {
+function CalendarTab({ events, calEvents, setCalEvents }: { events: EventData[]; calEvents: CalEvent[]; setCalEvents: ContentSetter<CalEvent> }) {
+  const admin = useAdmin();
   const [calYear, setCalYear] = useState(() => new Date().getFullYear());
   const [calMonth, setCalMonth] = useState(() => new Date().getMonth());
   const [calModal, setCalModal] = useState<{ date: string; event?: CalEvent } | null>(null);
@@ -1424,16 +1434,17 @@ function CalendarTab({ events, calEvents, setCalEvents }: { events: EventData[];
   const DAYS = ["SUN","MON","TUE","WED","THU","FRI","SAT"];
   const MONTHS = ["JAN","FEB","MAR","APR","MAY","JUN","JUL","AUG","SEP","OCT","NOV","DEC"];
 
-  const openAddCal = (date: string) => { setCalDraft({ title: "", desc: "", color: PRIMARY }); setCalModal({ date }); };
-  const openEditCal = (ev: CalEvent) => { setCalDraft({ title: ev.title, desc: ev.desc, color: ev.color }); setCalModal({ date: ev.date, event: ev }); };
-  const saveCal = () => {
-    if (!calModal || !calDraft.title.trim()) return;
+  const openAddCal = (date: string) => { if (!admin) return; setCalDraft({ title: "", desc: "", color: PRIMARY }); setCalModal({ date }); };
+  const openEditCal = (ev: CalEvent) => { if (!admin) return; setCalDraft({ title: ev.title, desc: ev.desc, color: ev.color }); setCalModal({ date: ev.date, event: ev }); };
+  const saveCal = async () => {
+    let saved = false;
+    if (!admin || !calModal || !calDraft.title.trim()) return;
     if (calModal.event) {
-      setCalEvents(es => es.map(e => e.id === calModal.event!.id ? { ...e, ...calDraft } : e));
+      saved = await setCalEvents(es => es.map(e => e.id === calModal.event!.id ? { ...e, ...calDraft } : e));
     } else {
-      setCalEvents(es => [...es, { id: Date.now().toString(), date: calModal.date, ...calDraft }]);
+      saved = await setCalEvents(es => [...es, { id: crypto.randomUUID(), date: calModal.date, ...calDraft }]);
     }
-    setCalModal(null);
+    if (saved) setCalModal(null);
   };
   const deleteCal = (id: string) => setCalEvents(es => es.filter(e => e.id !== id));
 
@@ -1490,7 +1501,7 @@ function CalendarTab({ events, calEvents, setCalEvents }: { events: EventData[];
                 background: isToday ? "rgba(0,255,65,0.10)" : day ? "rgba(0,255,65,0.02)" : "transparent",
                 borderRight: col < 6 ? `1px solid ${PRIMARY}20` : "none",
                 borderBottom: row < totalRows - 1 ? `1px solid ${PRIMARY}20` : "none",
-                cursor: day ? "pointer" : "default",
+                cursor: day && admin ? "pointer" : "default",
               }}
               onClick={() => day && openAddCal(ds)}
               onMouseEnter={e => { if (day) (e.currentTarget as HTMLDivElement).style.background = isToday ? "rgba(0,255,65,0.15)" : "rgba(0,255,65,0.05)"; }}
@@ -1523,7 +1534,7 @@ function CalendarTab({ events, calEvents, setCalEvents }: { events: EventData[];
         })}
       </div>
 
-      <div className="mt-3 text-xs" style={{ color:`${PRIMARY}40`, fontFamily:"'Share Tech Mono',monospace" }}>// CLICK A DATE TO ADD AN ENTRY · CLICK AN ENTRY TO EDIT OR DELETE</div>
+      <div className="mt-3 text-xs" style={{ color:`${PRIMARY}40`, fontFamily:"'Share Tech Mono',monospace" }}>{admin ? "// CLICK A DATE TO ADD AN ENTRY · CLICK AN ENTRY TO EDIT OR DELETE" : "// CALENDAR"}</div>
 
       {calModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4" style={{ background:"rgba(0,0,0,0.85)" }} onClick={() => setCalModal(null)}>
@@ -1651,14 +1662,26 @@ function ExploreTab() {
 type Page = "boot" | "auth" | "denied" | "dashboard" | "crew";
 
 export default function App() {
+  return <AdminProvider><Site /></AdminProvider>;
+}
+
+function Site() {
   const [page, setPage] = useState<Page>("boot");
   const [activeTab, setActiveTab] = useState("projects");
-  const [members, setMembers] = useState<Member[]>(INITIAL_MEMBERS);
+  const memberStore = useServerContent<Member>("members", INITIAL_MEMBERS.map(m => ({ ...m, avatarKey: m.codename })), items => items.map(m => {
+    const original = INITIAL_MEMBERS.find(base => base.codename === m.avatarKey);
+    return { ...m, customAvatar: original?.customAvatar, logoImage: original?.logoImage ?? m.logoImage };
+  }));
+  const { items: members, update: setMembers } = memberStore;
   const [editingMemberIdx, setEditingMemberIdx] = useState<number | null>(null);
   const [isAddingMember, setIsAddingMember] = useState(false);
-  const [projects, setProjects] = useState<Project[]>(PROJECTS);
-  const [events, setEvents] = useState<EventData[]>(INITIAL_EVENTS);
-  const [calEvents, setCalEvents] = useState<CalEvent[]>([]);
+  const projectStore = useServerContent<Project>("projects", PROJECTS);
+  const { items: projects, update: setProjects } = projectStore;
+  const eventStore = useServerContent<EventData>("events", INITIAL_EVENTS);
+  const { items: events, update: setEvents } = eventStore;
+  const calendarStore = useServerContent<CalEvent>("calendar", []);
+  const { items: calEvents, update: setCalEvents } = calendarStore;
+  const stores = [projectStore, memberStore, eventStore, calendarStore];
 
   const bootLines = [
     "BIOS v2.6.31-darknet :: POST CHECK...",
@@ -1822,6 +1845,9 @@ export default function App() {
               ))}
             </nav>
 
+            {stores.some(store => store.busy) && <p role="status" className="text-xs" style={{ color: PRIMARY }}>Saving to server…</p>}
+            {stores.filter(store => store.error).map((store, index) => <p key={index} role="alert" className="text-xs" style={{ color: DANGER }}>{store.error}</p>)}
+            <fieldset disabled={stores.some(store => store.busy)} className="border-0 p-0 m-0 min-w-0">
             {activeTab === "projects" && <ProjectsTab projects={projects} setProjects={setProjects} />}
             {activeTab === "members" && (
               <MembersTab
@@ -1837,6 +1863,7 @@ export default function App() {
             {activeTab === "calendar" && <CalendarTab events={events} calEvents={calEvents} setCalEvents={setCalEvents} />}
             {activeTab === "about" && <AboutTab />}
             {activeTab === "explore" && <ExploreTab />}
+            </fieldset>
 
             <div className="pt-4 text-xs flex justify-between" style={{ borderTop: `1px solid ${PRIMARY}15`, color: `${PRIMARY}30` }}>
               <span>5TH AVE BIPOLAR KIDS // ALL RIGHTS RESERVED. ALL WRONGS TOO.</span>
