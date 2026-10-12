@@ -506,6 +506,7 @@ interface Member {
 interface EditLogEntry { by: string; at: string; }
 
 interface Project {
+  website?: string;
   code: string;
   title: string;
   category: string;
@@ -638,6 +639,10 @@ function CreditsBlock({ author, organizer, editLog, color }: { author: string; o
 }
 
 function ProjectCard({ project }: { project: Project }) {
+  const isKirin = project.code === "PRJ-001" || /(?:girin|kirin|kirun|기린)/i.test(project.title);
+  const website = project.website || (isKirin ? "https://jangj864.github.io/kirun_university/" : project.code === "PRJ-002" ? "https://jangj864.github.io/unicorn-vs-dragon/" : null);
+  const isUnicorn = project.code === "PRJ-002" || project.website === "https://jangj864.github.io/unicorn-vs-dragon/";
+  const poster = project.poster || (isKirin ? `${import.meta.env.BASE_URL}images/kirin-university-preview.png` : isUnicorn ? `${import.meta.env.BASE_URL}images/unicorn-vs-dragon-preview.png` : null);
   const [open, setOpen] = useState(false);
   const [hovered, setHovered] = useState(false);
 
@@ -655,6 +660,7 @@ function ProjectCard({ project }: { project: Project }) {
         onMouseLeave={() => setHovered(false)}
         onClick={() => setOpen(true)}
       >
+        {poster && <img src={poster} alt={`${project.title} preview`} className="w-full object-cover" style={{ maxHeight: 260, objectPosition: "top" }} />}
         <div className="p-4">
           <div className="flex items-start justify-between mb-3">
             <div>
@@ -671,6 +677,7 @@ function ProjectCard({ project }: { project: Project }) {
           </div>
           <div className="text-xs leading-relaxed mb-3" style={{ color: project.color + "90" }}>{project.desc}</div>
           <TagList tags={project.tags} color={project.color} />
+          {website && <a href={website} target="_blank" rel="noopener noreferrer" onClick={e => e.stopPropagation()} className="flex items-center justify-center min-h-11 px-4 mt-4 text-sm" style={{ color: "#000", background: project.color, border: `1px solid ${project.color}`, textDecoration: "none" }}>VISIT WEBSITE ↗</a>}
           <div className="text-xs mt-3" style={{ color: project.color + "40" }}>[ CLICK TO VIEW DETAILS ▼ ]</div>
         </div>
       </div>
@@ -679,9 +686,9 @@ function ProjectCard({ project }: { project: Project }) {
         <ModalOverlay color={project.color} code={project.code} onClose={() => setOpen(false)}>
           <div className="p-5 grid md:grid-cols-2 gap-6">
             <div>
-              {project.poster ? (
+              {poster ? (
                 <div className="relative" style={{ border: `1px solid ${project.color}30` }}>
-                  <img src={project.poster} alt={project.title} className="w-full object-contain" />
+                  <img src={poster} alt={project.title} className="w-full object-contain" />
                   <div className="absolute inset-0 pointer-events-none" style={{ background: "repeating-linear-gradient(0deg, transparent, transparent 3px, rgba(0,0,0,0.06) 3px, rgba(0,0,0,0.06) 4px)" }} />
                 </div>
               ) : (
@@ -698,6 +705,7 @@ function ProjectCard({ project }: { project: Project }) {
               </div>
               <div className="text-xs leading-relaxed" style={{ color: project.color + "90" }}>{project.desc}</div>
               <DetailGrid details={project.details} color={project.color}/>
+              {website && <a href={website} target="_blank" rel="noopener noreferrer" className="inline-flex items-center min-h-11 px-3 text-xs" style={{ color: project.color, border: `1px solid ${project.color}60` }}>VISIT WEBSITE ↗</a>}
               <div className="pt-2"><TagList tags={project.tags} color={project.color} /></div>
               <CreditsBlock author={project.author} organizer={project.organizer} editLog={project.editLog||[]} color={project.color}/>
             </div>
@@ -802,7 +810,8 @@ const PROJECTS: Project[] = [
   },
   {
     code: "PRJ-002",
-    title: "Untitled",
+    title: "Unicorn vs Dragon",
+    website: "https://jangj864.github.io/unicorn-vs-dragon/",
     category: "",
     year: "",
     desc: "",
