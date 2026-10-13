@@ -649,7 +649,7 @@ function ProjectCard({ project }: { project: Project }) {
   return (
     <>
       <div
-        className="border transition-all duration-300 cursor-pointer font-['Share_Tech_Mono']"
+        className="border flex flex-col flex-1 transition-all duration-300 cursor-pointer font-['Share_Tech_Mono']"
         style={{
           borderColor: hovered ? project.color + "70" : project.color + "25",
           background: hovered ? "rgba(0,0,0,0.92)" : "rgba(0,0,0,0.6)",
@@ -660,7 +660,7 @@ function ProjectCard({ project }: { project: Project }) {
         onMouseLeave={() => setHovered(false)}
         onClick={() => setOpen(true)}
       >
-        <div className="p-4">
+        <div className="p-4 flex flex-col flex-1">
           <div className="flex items-start justify-between mb-3">
             <div>
               <div className="text-xs mb-1" style={{ color: project.color + "60" }}>{project.code} // {project.category}</div>
@@ -676,6 +676,7 @@ function ProjectCard({ project }: { project: Project }) {
           </div>
           <div className="text-xs leading-relaxed mb-3" style={{ color: project.color + "90" }}>{project.desc}</div>
           <TagList tags={project.tags} color={project.color} />
+          <div className="flex-1" />
           {website && <a href={website} target="_blank" rel="noopener noreferrer" onClick={e => e.stopPropagation()} className="flex items-center justify-center min-h-11 px-4 mt-4 text-sm" style={{ color: "#000", background: project.color, border: `1px solid ${project.color}`, textDecoration: "none" }}>VISIT WEBSITE ↗</a>}
           <div className="text-xs mt-3" style={{ color: project.color + "40" }}>[ CLICK TO VIEW DETAILS ▼ ]</div>
         </div>
@@ -813,10 +814,10 @@ const PROJECTS: Project[] = [
     website: "https://jangj864.github.io/unicorn-vs-dragon/",
     category: "",
     year: "",
-    desc: "",
+    desc: "Two legends collide beneath Manhattan. Choose your side and battle for control of the portals.",
     status: "",
     color: "#ffcc00",
-    tags: [],
+    tags: ["game", "fantasy", "NYC", "dragon", "unicorn"],
     poster: null,
     details: [],
     author: "",
