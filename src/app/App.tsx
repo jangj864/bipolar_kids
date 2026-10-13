@@ -660,7 +660,6 @@ function ProjectCard({ project }: { project: Project }) {
         onMouseLeave={() => setHovered(false)}
         onClick={() => setOpen(true)}
       >
-        {poster && <img src={poster} alt={`${project.title} preview`} className="w-full object-cover" style={{ maxHeight: 260, objectPosition: "top" }} />}
         <div className="p-4">
           <div className="flex items-start justify-between mb-3">
             <div>
