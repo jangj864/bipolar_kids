@@ -814,7 +814,7 @@ const PROJECTS: Project[] = [
     title: "Unicorn vs Dragon",
     website: "https://jangj864.github.io/unicorn-vs-dragon/",
     category: "",
-    year: "",
+    year: "2026-",
     desc: "Two legends collide beneath Manhattan. Choose your side and battle for control of the portals.",
     status: "",
     color: "#ffcc00",
@@ -827,13 +827,14 @@ const PROJECTS: Project[] = [
   },
   {
     code: "PRJ-003",
-    title: "Untitled",
-    category: "",
-    year: "",
-    desc: "",
+    title: "SEEN",
+    website: "https://jangj864.github.io/seen/",
+    category: "DIGITAL PUBLICATION",
+    year: "2026-",
+    desc: "A film magazine made to be shared. Explore stories, screenings, and quizzes in an interactive cinema. Watch. Talk. Pass it on.",
     status: "",
     color: "#ff6600",
-    tags: [],
+    tags: ["film", "magazine", "digital-publication", "interactive", "cinema"],
     poster: null,
     details: [],
     author: "",
@@ -842,13 +843,14 @@ const PROJECTS: Project[] = [
   },
   {
     code: "PRJ-004",
-    title: "Untitled",
-    category: "",
-    year: "",
-    desc: "",
+    title: "CD Studio: JavaScript",
+    website: "https://jangj864.github.io/cd-javascript/index.html",
+    category: "PROJECT ARCHIVE",
+    year: "2026-",
+    desc: "A Fall 2026 project archive from Parsons School of Design. Experiments in JavaScript, interaction, and creative coding.",
     status: "",
     color: "#8844ff",
-    tags: [],
+    tags: ["javascript", "creative-coding", "interaction", "Parsons", "archive"],
     poster: null,
     details: [],
     author: "",
@@ -1647,7 +1649,7 @@ function ExploreLogoLink({ href, children, aspectRatio }: { href: string; childr
       href={href}
       target="_blank"
       rel="noopener noreferrer"
-      style={{ textDecoration: "none", display: "block", width: "min(420px, 75vw)" }}
+      style={{ textDecoration: "none", display: "block", width: "100%" }}
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
     >
@@ -1655,7 +1657,7 @@ function ExploreLogoLink({ href, children, aspectRatio }: { href: string; childr
         className="relative transition-all duration-300"
         style={{
           width: "100%",
-          height: `calc(min(420px, 75vw) / ${aspectRatio})`,
+          aspectRatio,
           filter: hovered
             ? "brightness(0) invert(1) sepia(1) saturate(8) hue-rotate(90deg) drop-shadow(0 0 18px #00ff41)"
             : "brightness(0) invert(1)",
@@ -1680,21 +1682,23 @@ function VelfontIcon() {
 
 function ExploreTab() {
   return (
-    <div className="flex flex-col items-center gap-12 w-full">
+    <div className="flex flex-col mx-auto" style={{ width: "min(420px, 100%)", gap: "clamp(32px, 6vw, 48px)" }}>
       <ExploreLogoLink href="https://www.ddoazoo.com/" aspectRatio={5.21}>
         <DdoazooLogo />
       </ExploreLogoLink>
       <ExploreLogoLink href="https://velfontoffice.com/" aspectRatio={1514.28 / 938.71}>
         <VelfontIcon />
       </ExploreLogoLink>
-      <ExploreLogoLink href="https://e-no.art/" aspectRatio={1522 / 522}>
+      <ExploreLogoLink href="https://e-no.art/" aspectRatio={1478 / 468}>
         <img src={enoLogo} alt="eno" style={{ width: "100%", height: "100%", objectFit: "contain" }} />
       </ExploreLogoLink>
       <ExploreLogoLink href="https://minsungchodesign.com/" aspectRatio={436.15 / 79.03}>
         <img src={minsungLogo} alt="Minsung Cho Design" style={{ width: "100%", height: "100%", objectFit: "contain" }} />
       </ExploreLogoLink>
-      <ExploreLogoLink href="https://www.staceynah.com/" aspectRatio={1840 / 400}>
-        <img src={staceyNahLogo} alt="STACEY NAH" style={{ width: "100%", height: "100%", objectFit: "contain" }} />
+      <ExploreLogoLink href="https://www.staceynah.com/" aspectRatio={1618 / 141}>
+        <svg viewBox="104 118 1618 141" role="img" aria-label="STACEY NAH" style={{ display: "block", width: "100%", height: "100%" }}>
+          <image href={staceyNahLogo} width="1840" height="400" />
+        </svg>
       </ExploreLogoLink>
     </div>
   );
