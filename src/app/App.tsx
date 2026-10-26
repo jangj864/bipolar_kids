@@ -23,6 +23,7 @@ import DdoazooLogo from "@/imports/Vector/index";
 import velfontLogo from "@/imports/vel_font_logo.png";
 import enoLogo from "@/imports/image.png";
 import minsungLogo from "@/imports/minsung-logo.svg";
+import staceyNahLogo from "@/imports/stacey-nah-logo.png";
 import enoAvatar from "@/imports/image-2.png";
 
 const CHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()_+-=[]{}|;':\",./<>?\\`~";
@@ -1680,7 +1681,7 @@ function VelfontIcon() {
 function ExploreTab() {
   return (
     <div className="flex flex-col items-center gap-12 w-full">
-      <ExploreLogoLink href="https://jangj864.github.io/ddoazoo/index.html" aspectRatio={5.21}>
+      <ExploreLogoLink href="https://www.ddoazoo.com/" aspectRatio={5.21}>
         <DdoazooLogo />
       </ExploreLogoLink>
       <ExploreLogoLink href="https://velfontoffice.com/" aspectRatio={1514.28 / 938.71}>
@@ -1691,6 +1692,9 @@ function ExploreTab() {
       </ExploreLogoLink>
       <ExploreLogoLink href="https://minsungchodesign.com/" aspectRatio={436.15 / 79.03}>
         <img src={minsungLogo} alt="Minsung Cho Design" style={{ width: "100%", height: "100%", objectFit: "contain" }} />
+      </ExploreLogoLink>
+      <ExploreLogoLink href="https://www.staceynah.com/" aspectRatio={1840 / 400}>
+        <img src={staceyNahLogo} alt="STACEY NAH" style={{ width: "100%", height: "100%", objectFit: "contain" }} />
       </ExploreLogoLink>
     </div>
   );
