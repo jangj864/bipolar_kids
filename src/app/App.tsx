@@ -816,7 +816,7 @@ const PROJECTS: Project[] = [
     category: "",
     year: "2026-",
     desc: "Two legends collide beneath Manhattan. Choose your side and battle for control of the portals.",
-    status: "",
+    status: "ACTIVE",
     color: "#ffcc00",
     tags: ["game", "fantasy", "NYC", "dragon", "unicorn"],
     poster: null,
@@ -832,7 +832,7 @@ const PROJECTS: Project[] = [
     category: "DIGITAL PUBLICATION",
     year: "2026-",
     desc: "A film magazine made to be shared. Explore stories, screenings, and quizzes in an interactive cinema. Watch. Talk. Pass it on.",
-    status: "",
+    status: "ACTIVE",
     color: "#ff6600",
     tags: ["film", "magazine", "digital-publication", "interactive", "cinema"],
     poster: null,
@@ -848,7 +848,7 @@ const PROJECTS: Project[] = [
     category: "PROJECT ARCHIVE",
     year: "2026-",
     desc: "A Fall 2026 project archive from Parsons School of Design. Experiments in JavaScript, interaction, and creative coding.",
-    status: "",
+    status: "ACTIVE",
     color: "#8844ff",
     tags: ["javascript", "creative-coding", "interaction", "Parsons", "archive"],
     poster: null,
@@ -1372,8 +1372,8 @@ function EventsTab({ events, setEvents }: { events: EventData[]; setEvents: Cont
 
 function AboutTab() {
   return (
-    <div className="space-y-8 max-w-2xl">
-      <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 sm:gap-6">
+    <div className="space-y-8 max-w-2xl mx-auto sm:mx-0">
+      <div className="flex flex-col sm:flex-row items-center text-center sm:text-left gap-4 sm:gap-6">
         <div className="relative flex-shrink-0" style={{ width: 110, height: 110, filter: "invert(1) sepia(1) saturate(5) hue-rotate(90deg)", opacity: 0.85 }}>
           <LogoSvg />
         </div>
