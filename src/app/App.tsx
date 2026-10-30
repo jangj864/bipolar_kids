@@ -1003,7 +1003,7 @@ const INITIAL_MEMBERS: Member[] = [
   {
     codename: "chaechae",
     role: "",
-    instagram: "",
+    instagram: "itwasdelusion",
     contact: "",
     bio: "",
     color: "#6699ff",
