@@ -686,7 +686,7 @@ function ProjectCard({ project }: { project: Project }) {
           <TagList tags={project.tags} color={project.color} />
           <div className="flex-1" />
           {website && <a href={website} target="_blank" rel="noopener noreferrer" onClick={e => e.stopPropagation()} className="flex items-center justify-center min-h-11 px-4 mt-4 text-sm" style={{ color: "#000", background: project.color, border: `1px solid ${project.color}`, textDecoration: "none" }}>{t("VISIT WEBSITE ↗")}</a>}
-          <div className="text-xs mt-3" style={{ color: project.color + "40" }}>{t("[ CLICK TO VIEW DETAILS ▼ ]")}</div>
+          <div className="text-xs mt-3" style={{ color: project.color + "40" }}>{t("[ VIEW DETAILS ▼ ]")}</div>
         </div>
       </div>
 
@@ -762,7 +762,7 @@ function EventCard({ event }: { event: EventData }) {
           </div>
           <div className="text-xs leading-relaxed mb-4" style={{ color: event.color + "90" }}>{t(event.desc)}</div>
           <TagList tags={event.tags} color={event.color} />
-          <div className="text-xs mt-3" style={{ color: event.color + "50" }}>{t("[ CLICK TO VIEW DETAILS ▼ ]")}</div>
+          <div className="text-xs mt-3" style={{ color: event.color + "50" }}>{t("[ VIEW DETAILS ▼ ]")}</div>
         </div>
       </div>
 
@@ -801,7 +801,7 @@ const PROJECTS: Project[] = [
     code: "PRJ-001",
     title: "Girin University",
     category: "INSTITUTION",
-    desc: "An unofficial school run by the collective. No set curriculum or graduation.",
+    desc: "An informal school run by the collective, without a fixed curriculum or graduation.",
     status: "ACTIVE",
     year: "2026—",
     color: "#00ff41",
@@ -823,7 +823,7 @@ const PROJECTS: Project[] = [
     website: "https://jangj864.github.io/unicorn-vs-dragon/",
     category: "",
     year: "2026-",
-    desc: "A browser game set in Manhattan. Pick Dragon or Unicorn and play for control of the city’s portals.",
+    desc: "A browser game set in Manhattan, where Dragon and Unicorn teams compete for the city’s portals.",
     status: "ACTIVE",
     color: "#ffcc00",
     tags: ["game", "fantasy", "NYC", "dragon", "unicorn"],
@@ -839,7 +839,7 @@ const PROJECTS: Project[] = [
     website: "https://jangj864.github.io/seen/",
     category: "DIGITAL PUBLICATION",
     year: "2026-",
-    desc: "A film magazine turned into a website you can walk around in. Read the articles, look through the films, or stop by the arcade for a quiz.",
+    desc: "An online film magazine presented as an interactive cinema, with articles, film selections, and quizzes.",
     status: "ACTIVE",
     color: "#ff6600",
     tags: ["film", "magazine", "digital-publication", "interactive", "cinema"],
@@ -855,7 +855,7 @@ const PROJECTS: Project[] = [
     website: "https://jangj864.github.io/cd-javascript/index.html",
     category: "PROJECT ARCHIVE",
     year: "2026-",
-    desc: "Work from the Fall 2026 JavaScript studio at Parsons, collected in one place.",
+    desc: "A collection of projects from the Fall 2026 JavaScript studio at Parsons School of Design.",
     status: "ACTIVE",
     color: "#8844ff",
     tags: ["javascript", "creative-coding", "interaction", "Parsons", "archive"],
@@ -1025,7 +1025,7 @@ const INITIAL_EVENTS: EventData[] = [
     title: "1sr 2026 NYC Party",
     date: "TBD",
     location: "New York City",
-    desc: "No date yet. We’ll post the details here.",
+    desc: "Date and venue will be announced here.",
     status: "TBD",
     color: "#00ff41",
     tags: [],
@@ -1255,7 +1255,7 @@ function ProjectsTab({ projects, setProjects }: { projects: Project[]; setProjec
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between mb-2">
-        <div className="text-xs" style={{ color: `${PRIMARY}40` }}>{language === "ko" ? `// 프로젝트 ${projects.length}개` : `// ${projects.length} PROJECTS FOUND IN MANIFEST`}</div>
+        <div className="text-xs" style={{ color: `${PRIMARY}40` }}>{language === "ko" ? `// 프로젝트 ${projects.length}개` : `// ${projects.length} PROJECTS`}</div>
         <AddButton onClick={() => { setEditingProject({ code: `PRJ-${crypto.randomUUID()}`, title:"", category:"", desc:"", status:"ACTIVE", year:"2026", color: PRIMARY, tags:[], poster:null, details:[], author:"", organizer:"", editLog:[] }); setIsAddingProject(true); }} />
       </div>
       <div className="grid md:grid-cols-2 gap-4">
@@ -1309,7 +1309,7 @@ function MembersTab({ members, setMembers, editingMemberIdx, setEditingMemberIdx
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between mb-2">
-        <div className="text-xs" style={{ color: `${PRIMARY}40` }}>{language === "ko" ? `// 함께하는 멤버 ${members.length}명` : `// ${members.length} ENTITIES IDENTIFIED — HOVER TO INTERACT`}</div>
+        <div className="text-xs" style={{ color: `${PRIMARY}40` }}>{language === "ko" ? `// 함께하는 멤버 ${members.length}명` : `// ${members.length} MEMBERS`}</div>
         <AddButton onClick={() => {
           const newIdx = members.length;
           setIsAddingMember(true);
@@ -1349,7 +1349,7 @@ function EventsTab({ events, setEvents }: { events: EventData[]; setEvents: Cont
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between mb-2">
-        <div className="text-xs" style={{ color: `${PRIMARY}40` }}>{language === "ko" ? `// 이벤트 ${events.length}개` : `// ${events.length} EVENTS SCHEDULED — COORDINATES CONFIRMED`}</div>
+        <div className="text-xs" style={{ color: `${PRIMARY}40` }}>{language === "ko" ? `// 이벤트 ${events.length}개` : `// ${events.length} EVENTS`}</div>
         <AddButton onClick={() => { setEditingEvent({ code: `EVT-${crypto.randomUUID()}`, title:"", date:"TBD", location:"", desc:"", status:"SCHEDULED", color: PRIMARY, tags:[], poster:null, details:[], author:"", organizer:"", editLog:[] }); setIsAddingEvent(true); }} />
       </div>
       <div className="grid md:grid-cols-1 gap-4 max-w-2xl">
@@ -1411,9 +1411,9 @@ function AboutTab() {
       </div>
 
       <div className="space-y-3 font-['Share_Tech_Mono'] text-xs leading-relaxed" style={{ borderLeft: `2px solid ${PRIMARY}25`, paddingLeft: "1.25rem" }}>
-        <p style={{ color: PRIMARY }}>{t("5th Ave Bipolar Kids is a group of people making music, images, books, and websites. We’re based in Seoul, Daegu, and New York.")} </p>
-        <p style={{ color: `${PRIMARY}80` }}>{t("We started as a band in 2026. Somehow, we ended up with more staff than players. There’s still no proper EP, but there is merch. Whether anyone plans to buy or sell it is another question.")} </p>
-        <p style={{ color: `${PRIMARY}60` }}>{t("Most of us have our own work going on. Sometimes we bring it here and work on it together. That’s how the books, websites, and other projects on this site came about.")} </p>
+        <p style={{ color: PRIMARY }}>{t("5th Ave Bipolar Kids is a collective of musicians, designers, photographers, and writers in Seoul, Daegu, and New York.")} </p>
+        <p style={{ color: `${PRIMARY}80` }}>{t("We formed as a band in 2026. As more members joined, our work grew to include publications, websites, and other projects.")} </p>
+        <p style={{ color: `${PRIMARY}60` }}>{t("This site brings together our projects, the members behind them, and upcoming events.")} </p>
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 font-['Share_Tech_Mono']">
@@ -1429,7 +1429,7 @@ function AboutTab() {
       </div>
 
       <div className="border p-5 font-['Share_Tech_Mono']" style={{ borderColor: `${PRIMARY}30`, background: "rgba(0,0,0,0.6)", backdropFilter: "blur(12px)", WebkitBackdropFilter: "blur(12px)" }}>
-        <div className="text-xs mb-4" style={{ color: `${PRIMARY}60` }}>{t("■ CONTACT // SECURE CHANNEL")}</div>
+        <div className="text-xs mb-4" style={{ color: `${PRIMARY}60` }}>{t("■ CONTACT")}</div>
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
           <div>
             <div className="text-xs mb-1" style={{ color: `${PRIMARY}50` }}>{t("EMAIL")}</div>
@@ -1443,12 +1443,9 @@ function AboutTab() {
               ddoazoo@gmail.com
             </a>
           </div>
-          <div className="text-xs" style={{ color: `${PRIMARY}30` }}>
-            <div>{t("RESPONSE TIME")}</div>
-            <div style={{ color: `${PRIMARY}60` }}>{t("UNKNOWN")}</div>
-          </div>
+
         </div>
-        <div className="mt-4 text-xs" style={{ color: `${PRIMARY}30`, borderTop: `1px solid ${PRIMARY}15`, paddingTop: "0.75rem" }}>{t("// PROJECTS, COLLABORATIONS, OR JUST A HELLO")} </div>
+        <div className="mt-4 text-xs" style={{ color: `${PRIMARY}30`, borderTop: `1px solid ${PRIMARY}15`, paddingTop: "0.75rem" }}>{t("// PROJECT ENQUIRIES & COLLABORATIONS")} </div>
         <div className="mt-5" style={{ borderTop: `1px solid ${PRIMARY}15`, paddingTop: "1rem" }}>
           <div className="text-xs mb-3" style={{ color: `${PRIMARY}60` }}>{t("■ INSTAGRAM")}</div>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -1727,14 +1724,14 @@ function BrandHome({ projects, events, members, onNavigate }: {
   return (
     <div className="brand-home">
       <section className="brand-hero" aria-labelledby="brand-heading">
-        <div className="brand-eyebrow"><span className="brand-dot" /> {t("A CREATIVE COLLECTIVE / SINCE 2026")}</div>
+        <div className="brand-eyebrow"><span className="brand-dot" /> {t("A CREATIVE COLLECTIVE / EST. 2026")}</div>
         <div className="brand-hero-grid">
           <div className="brand-hero-copy">
             <div className="brand-coordinate">{t("SEOUL ↔ DAEGU ↔ NEW YORK")}</div>
             <h1 id="brand-heading"><span>5TH AVE</span>BIPOLAR<br /><em>KIDS.</em></h1>
-            <p>{t("Music, books,")}<br />{t("and things for the web.")}</p>
+            <p>{t("Music, books,")}<br />{t("and websites.")}</p>
             <div className="brand-actions">
-              <button className="brand-button brand-button-primary" onClick={() => onNavigate("projects")}>{t("SEE OUR WORK")} <span>↗</span></button>
+              <button className="brand-button brand-button-primary" onClick={() => onNavigate("projects")}>{t("VIEW PROJECTS")} <span>↗</span></button>
               <button className="brand-button" onClick={() => onNavigate("about")}>{t("ABOUT US")} <span>→</span></button>
             </div>
           </div>
@@ -1744,19 +1741,19 @@ function BrandHome({ projects, events, members, onNavigate }: {
             <div className="brand-emblem-bottom"><span>{t("5TH AVE BIPOLAR KIDS")}</span><span>{t("SEOUL / DAEGU / NEW YORK")}</span></div>
           </div>
         </div>
-        <div className="brand-hero-bottom"><span>{t("MUSIC / ART / DESIGN / PUBLISHING / PERFORMANCE")}</span><a href="#selected-work">{t("OUR WORK BELOW ↓")}</a></div>
+        <div className="brand-hero-bottom"><span>{t("MUSIC / ART / DESIGN / PUBLISHING / PERFORMANCE")}</span><a href="#selected-work">{t("VIEW PROJECTS ↓")}</a></div>
       </section>
 
       <section className="brand-intro" aria-label="About the collective">
         <span className="brand-section-index">{t("01 / ABOUT US")}</span>
         <div><h2>{t("It started")}<br /><span>{t("with a band.")}</span></h2>
-          <p>{t("We got together to play music in 2026. Along the way, people working in design, photography, and writing joined in. Some of us are in Seoul, some in Daegu, some in New York. We work on our own projects and help each other make things.")}</p>
-          <button className="brand-text-link" onClick={() => onNavigate("members")}>{t("MEET THE MEMBERS ↗")}</button>
+          <p>{t("5th Ave Bipolar Kids began as a band in 2026. Our members work in music, design, photography, and writing across Seoul, Daegu, and New York. The projects here include both individual work and collaborations.")}</p>
+          <button className="brand-text-link" onClick={() => onNavigate("members")}>{t("VIEW MEMBERS ↗")}</button>
         </div>
       </section>
 
       <section id="selected-work" className="brand-work" aria-labelledby="work-heading">
-        <div className="brand-section-header"><div><span className="brand-section-index">{t("02 / OUR WORK")}</span><h2 id="work-heading">{t("Things we’ve made.")}</h2></div><button className="brand-text-link" onClick={() => onNavigate("projects")}>{t("ALL PROJECTS ↗")}</button></div>
+        <div className="brand-section-header"><div><span className="brand-section-index">{t("02 / OUR WORK")}</span><h2 id="work-heading">{t("Our projects.")}</h2></div><button className="brand-text-link" onClick={() => onNavigate("projects")}>{t("ALL PROJECTS ↗")}</button></div>
         <div className="brand-work-list">
           {featured.map((p, index) => <article className="brand-work-row" key={p.code} style={{ "--project-color": p.color } as React.CSSProperties}>
             <span className="brand-work-number">0{index + 1}</span>
@@ -1770,15 +1767,15 @@ function BrandHome({ projects, events, members, onNavigate }: {
       </section>
 
       <section className="brand-community" aria-label="Collective and happenings">
-        <div className="brand-community-people"><span className="brand-section-index">{t("03 / MEMBERS")}</span><h2>{t("The people")}<br /><span>{t("we do this with.")}</span></h2>
+        <div className="brand-community-people"><span className="brand-section-index">{t("03 / MEMBERS")}</span><h2>{t("Our members.")}</h2>
           <div className="brand-member-names">{members.slice(0, 6).map(m => <span key={m.codename} style={{ color: m.color }}>{m.codename}</span>)}</div>
           <button className="brand-text-link" onClick={() => onNavigate("members")}>{t("ALL MEMBERS ↗")}</button>
         </div>
-        <div className="brand-happening"><span className="brand-section-index">{t("EVENTS")}</span><span className="brand-event-status">{t(upcoming?.date === "TBD" ? "DATE NOT SET YET" : upcoming?.date || "MORE TO COME")}</span><h3>{t(upcoming?.title || "Next up.")}</h3><p>{t(upcoming?.desc || "Nothing scheduled yet. We’ll post the next event here.")}</p><button className="brand-text-link" onClick={() => onNavigate("events")}>{t("SEE EVENTS ↗")}</button></div>
+        <div className="brand-happening"><span className="brand-section-index">{t("EVENTS")}</span><span className="brand-event-status">{t(upcoming?.date === "TBD" ? "DATE TO BE ANNOUNCED" : upcoming?.date || "FURTHER DETAILS TO FOLLOW")}</span><h3>{t(upcoming?.title || "Next up.")}</h3><p>{t(upcoming?.desc || "No upcoming events are listed.")}</p><button className="brand-text-link" onClick={() => onNavigate("events")}>{t("SEE EVENTS ↗")}</button></div>
       </section>
 
-      <section className="brand-contact" aria-labelledby="contact-heading"><span className="brand-section-index">{t("04 / CONTACT")}</span><h2 id="contact-heading">{t("Want to")}<br />{t("work with us")}<span>?</span></h2><div className="brand-contact-bottom"><p>{t("For projects, collaborations, or a quick hello, send us an email.")}</p><a className="brand-button brand-button-primary" href="mailto:ddoazoo@gmail.com">{t("GET IN TOUCH")} <span>↗</span></a></div></section>
-      <div className="brand-home-end"><span>5TH AVE BIPOLAR KIDS</span><button onClick={() => onNavigate("explore")} className="brand-text-link">{t("MEMBERS’ WEBSITES ↗")}</button></div>
+      <section className="brand-contact" aria-labelledby="contact-heading"><span className="brand-section-index">{t("04 / CONTACT")}</span><h2 id="contact-heading">{t("Projects and")}<br /><span>{t("collaborations.")}</span></h2><div className="brand-contact-bottom"><p>{t("For project enquiries and collaboration proposals, email us at ddoazoo@gmail.com.")}</p><a className="brand-button brand-button-primary" href="mailto:ddoazoo@gmail.com">{t("EMAIL US")} <span>↗</span></a></div></section>
+      <div className="brand-home-end"><span>5TH AVE BIPOLAR KIDS</span><button onClick={() => onNavigate("explore")} className="brand-text-link">{t("RELATED WEBSITES ↗")}</button></div>
       {selected && <ModalOverlay color={selected.color} code={selected.code} onClose={() => setSelected(null)}>
         <div className="brand-project-detail">
           {(selected.poster || previews[selected.code]) && <img src={selected.poster || previews[selected.code]} alt={t(selected.title)} />}
@@ -1857,7 +1854,7 @@ function Site() {
       <div className="relative z-20 max-w-6xl mx-auto px-4 sm:px-8 py-5 sm:py-8">
         <header className="brand-header">
           <button className="brand-wordmark" onClick={() => navigate("home")} aria-label="5th Ave Bipolar Kids home"><span>5TH AVE</span><strong>BIPOLAR KIDS</strong></button>
-          <div className="brand-header-note">{t("A BAND,")}<br />{t("WITH A FEW SIDE PROJECTS.")}</div>
+          <div className="brand-header-note">{t("A BAND")}<br />{t("AND A CREATIVE COLLECTIVE.")}</div>
           <div className="brand-language-switch" role="group" aria-label={language === "ko" ? "언어 선택" : "Language selection"}>
             <button lang="ko" aria-pressed={language === "ko"} onClick={() => setLanguage("ko")}>한국어</button>
             <button lang="en" aria-pressed={language === "en"} onClick={() => setLanguage("en")}>EN</button>
@@ -1989,7 +1986,7 @@ function Site() {
             </fieldset>
 
             <div className="pt-4 text-xs flex justify-between" style={{ borderTop: `1px solid ${PRIMARY}15`, color: `${PRIMARY}30` }}>
-              <span>5TH AVE BIPOLAR KIDS // ALL RIGHTS RESERVED. ALL WRONGS TOO.</span>
+              <span>5TH AVE BIPOLAR KIDS © 2026</span>
               <button className="min-h-11" onClick={() => setPage("auth")}>{t("[ ACCESS TERMINAL ]")}</button>
             </div>
           </div>
