@@ -42,7 +42,7 @@ export function AdminProvider({ children }: { children: React.ReactNode }) {
   return (
     <AdminContext.Provider value={isAdmin}>
       {children}
-      <div className="relative z-20 max-w-5xl mx-auto px-4 pb-6 text-xs" style={{ color: '#00ff41' }}>
+      <div className="relative z-20 max-w-6xl mx-auto px-4 sm:px-8 pb-6 text-xs" style={{ color: '#00ff41' }}>
         {isAdmin ? (
           <button type="button" className="min-h-11" onClick={async () => {
             const result = await backend!.auth.signOut();

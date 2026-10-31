@@ -1715,6 +1715,83 @@ function ExploreTab() {
   );
 }
 
+function BrandHome({ projects, events, members, onNavigate }: {
+  projects: Project[]; events: EventData[]; members: Member[]; onNavigate: (tab: string) => void;
+}) {
+  const [selected, setSelected] = useState<Project | null>(null);
+  const featured = projects.filter(p => p.title && p.title !== "Untitled").slice().reverse();
+  const upcoming = events.find(e => e.title && e.title !== "Untitled");
+  const previews: Record<string, string> = {
+    "PRJ-001": `${import.meta.env.BASE_URL}images/kirin-university-preview.png`,
+    "PRJ-002": `${import.meta.env.BASE_URL}images/unicorn-vs-dragon-preview.png`,
+  };
+  return (
+    <div className="brand-home">
+      <section className="brand-hero" aria-labelledby="brand-heading">
+        <div className="brand-eyebrow"><span className="brand-dot" /> INDEPENDENT CREATIVE COLLECTIVE / EST. 2026</div>
+        <div className="brand-hero-grid">
+          <div className="brand-hero-copy">
+            <div className="brand-coordinate">SEOUL ↔ DAEGU ↔ NEW YORK</div>
+            <h1 id="brand-heading"><span>5TH AVE</span>BIPOLAR<br /><em>KIDS.</em></h1>
+            <p>Different minds.<br />One collective frequency.</p>
+            <div className="brand-actions">
+              <button className="brand-button brand-button-primary" onClick={() => onNavigate("projects")}>EXPLORE OUR WORK <span>↗</span></button>
+              <button className="brand-button" onClick={() => onNavigate("about")}>MEET THE COLLECTIVE <span>→</span></button>
+            </div>
+          </div>
+          <div className="brand-emblem" aria-label="5th Ave Bipolar Kids collective emblem" role="img">
+            <div className="brand-emblem-top"><span>5ABK / COLLECTIVE SIGNAL</span><span>001</span></div>
+            <div className="brand-emblem-art"><LogoSvg /></div>
+            <div className="brand-emblem-bottom"><span>INDEPENDENT BY NATURE.</span><span>CONNECTED BY CHOICE.</span></div>
+          </div>
+        </div>
+        <div className="brand-hero-bottom"><span>MUSIC / ART / DESIGN / PUBLISHING / PERFORMANCE</span><a href="#selected-work">SCROLL TO DISCOVER ↓</a></div>
+      </section>
+
+      <section className="brand-intro" aria-label="About the collective">
+        <span className="brand-section-index">01 / WHO WE ARE</span>
+        <div><h2>A shared space for<br /><span>ideas that cross boundaries.</span></h2>
+          <p>We started as a band. Now, we bring together musicians, designers, artists, and writers across Seoul, Daegu, and New York. From independent publications to digital experiments, we make room for different ways of creating.</p>
+          <button className="brand-text-link" onClick={() => onNavigate("members")}>MEET OUR PEOPLE ↗</button>
+        </div>
+      </section>
+
+      <section id="selected-work" className="brand-work" aria-labelledby="work-heading">
+        <div className="brand-section-header"><div><span className="brand-section-index">02 / SELECTED WORK</span><h2 id="work-heading">Made by the collective.</h2></div><button className="brand-text-link" onClick={() => onNavigate("projects")}>ALL PROJECTS ↗</button></div>
+        <div className="brand-work-list">
+          {featured.map((p, index) => <article className="brand-work-row" key={p.code} style={{ "--project-color": p.color } as React.CSSProperties}>
+            <span className="brand-work-number">0{index + 1}</span>
+            <button className="brand-work-open" onClick={() => setSelected(p)} aria-label={`View ${p.title} details`}>
+              <span className="brand-work-meta">{p.category || "DIGITAL EXPERIENCE"} / {p.year || "2026–"}</span>
+              <h3>{p.title}</h3><p>{p.desc}</p>
+            </button>
+            <button className="brand-work-arrow" aria-label={`Open ${p.title}`} onClick={() => setSelected(p)}>↗</button>
+          </article>)}
+        </div>
+      </section>
+
+      <section className="brand-community" aria-label="Collective and happenings">
+        <div className="brand-community-people"><span className="brand-section-index">03 / THE PEOPLE BEHIND IT</span><h2>Many voices.<br /><span>Shared energy.</span></h2>
+          <div className="brand-member-names">{members.slice(0, 6).map(m => <span key={m.codename} style={{ color: m.color }}>{m.codename}</span>)}</div>
+          <button className="brand-text-link" onClick={() => onNavigate("members")}>DISCOVER THE FULL CREW ↗</button>
+        </div>
+        <div className="brand-happening"><span className="brand-section-index">ON OUR RADAR / EVENTS</span><span className="brand-event-status">{upcoming?.date === "TBD" ? "DATE TO BE ANNOUNCED" : upcoming?.date || "MORE TO COME"}</span><h3>{upcoming?.title || "The next gathering."}</h3><p>{upcoming?.desc || "Keep an eye on this space for our next collective gathering."}</p><button className="brand-text-link" onClick={() => onNavigate("events")}>EVENTS & GATHERINGS ↗</button></div>
+      </section>
+
+      <section className="brand-contact" aria-labelledby="contact-heading"><span className="brand-section-index">04 / KEEP THE CONVERSATION GOING</span><h2 id="contact-heading">Have something<br />in mind<span>?</span></h2><div className="brand-contact-bottom"><p>Collaborations, new ideas, and everything in between.</p><a className="brand-button brand-button-primary" href="mailto:ddoazoo@gmail.com">GET IN TOUCH <span>↗</span></a></div></section>
+      <div className="brand-home-end"><span>5TH AVE BIPOLAR KIDS</span><button onClick={() => onNavigate("explore")} className="brand-text-link">OUR CREATIVE NETWORK ↗</button></div>
+      {selected && <ModalOverlay color={selected.color} code={selected.code} onClose={() => setSelected(null)}>
+        <div className="brand-project-detail">
+          {(selected.poster || previews[selected.code]) && <img src={selected.poster || previews[selected.code]} alt={selected.title} />}
+          <span className="brand-section-index">{selected.category} / {selected.year}</span><h2 style={{ color: selected.color }}>{selected.title}</h2><p>{selected.desc}</p><TagList tags={selected.tags} color={selected.color} />
+          <DetailGrid details={selected.details} color={selected.color} />
+          {(selected.website || selected.code === "PRJ-001") && <a className="brand-button" href={selected.website || "https://jangj864.github.io/kirun_university/"} target="_blank" rel="noopener noreferrer">VISIT WEBSITE ↗</a>}
+        </div>
+      </ModalOverlay>}
+    </div>
+  );
+}
+
 // ── Page types ────────────────────────────────────────────────────────────────
 type Page = "boot" | "auth" | "denied" | "dashboard" | "crew";
 
@@ -1724,8 +1801,8 @@ export default function App() {
 
 function Site() {
   const admin = useAdmin();
-  const [page, setPage] = useState<Page>("boot");
-  const [activeTab, setActiveTab] = useState("projects");
+  const [page, setPage] = useState<Page>("crew");
+  const [activeTab, setActiveTab] = useState("home");
   const memberStore = useServerContent<Member>("members", INITIAL_MEMBERS.map(m => ({ ...m, avatarKey: m.codename })), items => items.map(m => {
     const original = INITIAL_MEMBERS.find(base => base.codename === m.avatarKey);
     return { ...m, customAvatar: original?.customAvatar, logoImage: original?.logoImage ?? m.logoImage };
@@ -1740,6 +1817,7 @@ function Site() {
   const calendarStore = useServerContent<CalEvent>("calendar", []);
   const { items: calEvents, update: setCalEvents } = calendarStore;
   const stores = [projectStore, memberStore, eventStore, calendarStore];
+  const navigate = (tab: string) => { setActiveTab(tab); setPage("crew"); window.scrollTo({ top: 0, behavior: "instant" }); };
 
   const bootLines = [
     "BIOS v2.6.31-darknet :: POST CHECK...",
@@ -1776,19 +1854,11 @@ function Site() {
         backgroundSize: "150px",
       }} />
 
-      <div className="relative z-20 max-w-5xl mx-auto px-3 sm:px-4 py-5 sm:py-8">
-        <header className="mb-6 sm:mb-8 flex flex-col md:flex-row gap-4 items-start justify-between">
-          <div onClick={() => page !== "boot" && setPage("auth")} className={page !== "boot" ? "cursor-pointer" : ""}>
-            <GlitchTitle />
-            <div className="text-xs mt-2" style={{ color: `${PRIMARY}50` }}>
-              {page === "crew" ? "CREW // CLASSIFIED MANIFEST" : "ANONYMOUS NETWORK ACCESS POINT v0.0.1-SHADOW"}
-            </div>
-          </div>
-          <div className="flex md:block gap-3 text-left md:text-right text-xs md:space-y-1 shrink-0" style={{ color: `${PRIMARY}40` }}>
-            <div>[ENCRYPTED]</div>
-            <div>TOR: ACTIVE</div>
-            <div className="animate-pulse" style={{ color: DANGER }}>● LIVE</div>
-          </div>
+      <div className="relative z-20 max-w-6xl mx-auto px-4 sm:px-8 py-5 sm:py-8">
+        <header className="brand-header">
+          <button className="brand-wordmark" onClick={() => navigate("home")} aria-label="5th Ave Bipolar Kids home"><span>5TH AVE</span><strong>BIPOLAR KIDS</strong></button>
+          <div className="brand-header-note">INDEPENDENT MINDS.<br />CONNECTED FREQUENCIES.</div>
+          <a className="brand-header-contact" href="mailto:ddoazoo@gmail.com">LET’S TALK ↗</a>
         </header>
 
         {page === "boot" && (
@@ -1861,20 +1931,9 @@ function Site() {
 
         {page === "crew" && (
           <div className="space-y-8">
-            <div className="p-4 text-center" style={{
-              background: "rgba(0,0,0,0.6)",
-              border: `1px solid ${PRIMARY}25`,
-              backdropFilter: "blur(12px)", WebkitBackdropFilter: "blur(12px)",
-            }}>
-              <div className="font-['VT323'] text-4xl mb-1" style={{ color: PRIMARY, textShadow: `0 0 20px ${PRIMARY}` }}>
-                {admin ? "[ ADMIN ACCESS GRANTED ]" : "[ WELCOME, VISITOR ]"}
-              </div>
-              <div className="text-xs" style={{ color: `${PRIMARY}50` }}>
-                {admin ? "BIPOLAR KIDS // EDITING ENABLED" : "BIPOLAR KIDS // VIEW ONLY"}
-              </div>
-            </div>
+            {admin && <div className="brand-admin-note">ADMIN MODE / EDITING ENABLED</div>}
 
-            <nav aria-label="Main navigation" className="grid grid-cols-3 sm:grid-cols-6 border-b" style={{
+            <nav aria-label="Main navigation" className="brand-navigation" style={{
               borderColor: `${PRIMARY}30`,
               background: "rgba(0,0,0,0.75)",
               backdropFilter: "blur(20px)",
@@ -1882,6 +1941,7 @@ function Site() {
               boxShadow: "0 4px 30px rgba(0,0,0,0.6)",
             }}>
               {[
+                { id: "home", label: "HOME" },
                 { id: "projects", label: "PROJECTS" },
                 { id: "members", label: "MEMBERS" },
                 { id: "events", label: "EVENTS" },
@@ -1889,7 +1949,7 @@ function Site() {
                 { id: "about", label: "ABOUT" },
                 { id: "explore", label: "EXPLORE" },
               ].map((tab) => (
-                <button key={tab.id} onClick={() => setActiveTab(tab.id)}
+                <button key={tab.id} onClick={() => navigate(tab.id)}
                   aria-current={activeTab === tab.id ? "page" : undefined}
                   className="min-w-0 min-h-11 px-1 sm:px-2 py-3 text-[11px] sm:text-xs tracking-wide sm:tracking-widest transition-all duration-200"
                   style={{
@@ -1906,6 +1966,7 @@ function Site() {
             {stores.some(store => store.busy) && <p role="status" className="text-xs" style={{ color: PRIMARY }}>Saving to server…</p>}
             {stores.filter(store => store.error).map((store, index) => <p key={index} role="alert" className="fixed bottom-4 left-4 right-4 z-[120] border bg-black p-3 text-xs" style={{ color: DANGER }}>{store.error}</p>)}
             <fieldset disabled={stores.some(store => store.busy)} className="border-0 p-0 m-0 min-w-0">
+            {activeTab === "home" && <BrandHome projects={projects} events={events} members={members} onNavigate={navigate} />}
             {activeTab === "projects" && <ProjectsTab projects={projects} setProjects={setProjects} />}
             {activeTab === "members" && (
               <MembersTab
@@ -1925,7 +1986,7 @@ function Site() {
 
             <div className="pt-4 text-xs flex justify-between" style={{ borderTop: `1px solid ${PRIMARY}15`, color: `${PRIMARY}30` }}>
               <span>5TH AVE BIPOLAR KIDS // ALL RIGHTS RESERVED. ALL WRONGS TOO.</span>
-              <span className="cursor-pointer hover:text-red-500 transition-colors" onClick={() => setPage("boot")}>[ EXIT ]</span>
+              <button className="min-h-11" onClick={() => setPage("auth")}>[ ACCESS TERMINAL ]</button>
             </div>
           </div>
         )}
