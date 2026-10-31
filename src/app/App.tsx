@@ -51,10 +51,10 @@ function buildEditLog(existing: EditLogEntry[], by: string): EditLogEntry[] {
 }
 
 function editorStyles(c: string) {
-  const base: React.CSSProperties = { background:"rgba(0,0,0,0.6)", border:`1px solid ${c}30`, color:c, fontFamily:"'Share Tech Mono',monospace", outline:"none", width:"100%", padding:"6px 10px", fontSize:"12px" };
+  const base: React.CSSProperties = { background:"rgba(0,0,0,0.6)", border:`1px solid ${c}30`, color:c, fontFamily:"'Share Tech Mono', 'Galmuri11', monospace", outline:"none", width:"100%", padding:"6px 10px", fontSize:"12px" };
   return {
     input: base,
-    label: { color:c+"60", fontSize:"11px", fontFamily:"'Share Tech Mono',monospace", display:"block", marginBottom:"4px" } as React.CSSProperties,
+    label: { color:c+"60", fontSize:"11px", fontFamily:"'Share Tech Mono', 'Galmuri11', monospace", display:"block", marginBottom:"4px" } as React.CSSProperties,
     select: { ...base, cursor:"pointer", appearance:"none" as const } as React.CSSProperties,
   };
 }
@@ -207,7 +207,7 @@ function GlitchLine({ text, size = "text-6xl md:text-8xl", spacing = "0.12em" }:
     }, 800 + Math.random() * 400);
     return () => clearInterval(id);
   }, []);
-  const shared: React.CSSProperties = { letterSpacing: spacing, fontFamily: "'VT323', monospace" };
+  const shared: React.CSSProperties = { letterSpacing: spacing, fontFamily: "'VT323', 'Galmuri11', monospace" };
   return (
     <div className="relative inline-block select-none leading-none">
       <h1 className={`font-['VT323'] ${size}`} style={{
@@ -308,7 +308,7 @@ function AccessPanel({ onAccess, onDeny }: { onAccess: (isSecret: boolean) => vo
         maxLength={4}
         placeholder="_ _ _ _"
         className="w-full bg-transparent outline-none text-center text-2xl tracking-widest mb-6"
-        style={{ color: PRIMARY, borderBottom: `1px solid ${PRIMARY}50`, fontFamily: "'VT323', monospace", caretColor: PRIMARY }}
+        style={{ color: PRIMARY, borderBottom: `1px solid ${PRIMARY}50`, fontFamily: "'VT323', 'Galmuri11', monospace", caretColor: PRIMARY }}
       />
       {scanning ? (
         <div className="text-center animate-pulse font-['Share_Tech_Mono']" style={{ color: "#ffcc00", letterSpacing: "0.1em" }}>[ SCANNING... ]</div>
@@ -573,8 +573,8 @@ function MemberCard({ member, onEdit, onDelete }: { member: Member; onEdit: () =
       <div className="flex items-center justify-between px-4 py-2 text-xs" style={{ borderBottom:`1px solid ${member.color}20` }}>
         <span className="font-['VT323'] text-base tracking-wider" style={{ color: member.color }}>{member.codename}</span>
         {admin && <div className="flex gap-2">
-          <button onClick={onEdit} className="text-xs px-2 py-0.5 transition-all hover:opacity-100 opacity-40" style={{ border:`1px solid ${member.color}50`, color: member.color, fontFamily:"'Share Tech Mono',monospace" }} title="Edit member">EDIT</button>
-          <button onClick={e => { e.stopPropagation(); onDelete(); }} className="text-xs px-2 py-0.5 transition-all hover:opacity-100 opacity-40" style={{ border:`1px solid ${DANGER}50`, color: DANGER, fontFamily:"'Share Tech Mono',monospace" }}>DEL</button>
+          <button onClick={onEdit} className="text-xs px-2 py-0.5 transition-all hover:opacity-100 opacity-40" style={{ border:`1px solid ${member.color}50`, color: member.color, fontFamily:"'Share Tech Mono', 'Galmuri11', monospace" }} title="Edit member">EDIT</button>
+          <button onClick={e => { e.stopPropagation(); onDelete(); }} className="text-xs px-2 py-0.5 transition-all hover:opacity-100 opacity-40" style={{ border:`1px solid ${DANGER}50`, color: DANGER, fontFamily:"'Share Tech Mono', 'Galmuri11', monospace" }}>DEL</button>
         </div>}
       </div>
 
@@ -1079,7 +1079,7 @@ function ImageUploader({ current, color, onChange }: { current: string | null; c
   };
   return (
     <div>
-      <div className="text-xs mb-2" style={{ color: color + "60", fontFamily: "'Share Tech Mono',monospace" }}>IMAGE / POSTER</div>
+      <div className="text-xs mb-2" style={{ color: color + "60", fontFamily: "'Share Tech Mono', 'Galmuri11', monospace" }}>IMAGE / POSTER</div>
       <div className="flex gap-2 items-start">
         {current ? (
           <div className="relative flex-1" style={{ border: `1px solid ${color}30` }}>
@@ -1087,7 +1087,7 @@ function ImageUploader({ current, color, onChange }: { current: string | null; c
             <button
               onClick={() => onChange(null)}
               className="absolute top-1 right-1 text-xs px-2 py-0.5"
-              style={{ background: "rgba(0,0,0,0.85)", border: `1px solid ${DANGER}60`, color: DANGER, fontFamily: "'Share Tech Mono',monospace" }}
+              style={{ background: "rgba(0,0,0,0.85)", border: `1px solid ${DANGER}60`, color: DANGER, fontFamily: "'Share Tech Mono', 'Galmuri11', monospace" }}
             >✕ REMOVE</button>
           </div>
         ) : (
@@ -1096,14 +1096,14 @@ function ImageUploader({ current, color, onChange }: { current: string | null; c
             style={{ height: 80, border: `1px dashed ${color}40`, background: color + "05" }}
             onClick={() => inputRef.current?.click()}
           >
-            <span className="text-xs" style={{ color: color + "60", fontFamily: "'Share Tech Mono',monospace" }}>[ CLICK TO UPLOAD IMAGE ]</span>
+            <span className="text-xs" style={{ color: color + "60", fontFamily: "'Share Tech Mono', 'Galmuri11', monospace" }}>[ CLICK TO UPLOAD IMAGE ]</span>
           </div>
         )}
         {!current && (
           <button
             onClick={() => inputRef.current?.click()}
             className="text-xs px-3 py-2 flex-shrink-0"
-            style={{ border: `1px solid ${color}50`, color, background: color + "10", fontFamily: "'Share Tech Mono',monospace" }}
+            style={{ border: `1px solid ${color}50`, color, background: color + "10", fontFamily: "'Share Tech Mono', 'Galmuri11', monospace" }}
           >UPLOAD</button>
         )}
         <input ref={inputRef} type="file" accept="image/*" className="hidden" onChange={handleFile} />
@@ -1569,7 +1569,7 @@ function CalendarTab({ events, calEvents, setCalEvents }: { events: EventData[];
                     {evs.map(ev => (
                       <div key={ev.id}
                         className="px-1.5 py-0.5 truncate leading-tight cursor-pointer hover:opacity-80 transition-opacity"
-                        style={{ background: ev.color+"28", color: ev.color, borderLeft:`2px solid ${ev.color}`, fontFamily:"'Share Tech Mono',monospace", fontSize:"11px" }}
+                        style={{ background: ev.color+"28", color: ev.color, borderLeft:`2px solid ${ev.color}`, fontFamily:"'Share Tech Mono', 'Galmuri11', monospace", fontSize:"11px" }}
                         onClick={e => { e.stopPropagation(); if (!ev.isScheduled) { const c = calEvents.find(ce => ce.id === ev.id); if (c) openEditCal(c); } }}
                         title={ev.isScheduled ? "View in the Events tab" : "Click to edit"}
                       >
@@ -1584,7 +1584,7 @@ function CalendarTab({ events, calEvents, setCalEvents }: { events: EventData[];
         })}
       </div>
 
-      <div className="mt-3 text-xs" style={{ color:`${PRIMARY}40`, fontFamily:"'Share Tech Mono',monospace" }}>{t(admin ? "// CLICK A DATE TO ADD AN ENTRY · CLICK AN ENTRY TO EDIT OR DELETE" : "// CALENDAR")}</div>
+      <div className="mt-3 text-xs" style={{ color:`${PRIMARY}40`, fontFamily:"'Share Tech Mono', 'Galmuri11', monospace" }}>{t(admin ? "// CLICK A DATE TO ADD AN ENTRY · CLICK AN ENTRY TO EDIT OR DELETE" : "// CALENDAR")}</div>
 
       {calModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4" style={{ background:"rgba(0,0,0,0.85)" }} onClick={() => setCalModal(null)}>

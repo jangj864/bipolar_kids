@@ -49,3 +49,14 @@
     opacity: 1;
   }
 }
+
+/* Keep Hangul in the pixel font when a Latin-only terminal font is selected. */
+.site-shell {
+  font-family: 'Share Tech Mono', 'Galmuri11', monospace;
+}
+.site-shell [class*="VT323"] {
+  font-family: 'VT323', 'Galmuri11', monospace;
+}
+.site-shell [class*="Share_Tech_Mono"] {
+  font-family: 'Share Tech Mono', 'Galmuri11', monospace;
+}
