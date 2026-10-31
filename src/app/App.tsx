@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { backend, loginWithPin } from "./backend";
 import { AdminProvider, useAdmin } from "./Admin";
+import { LanguageProvider, useLanguage } from "./Language";
 import { useServerContent, type ContentSetter } from "./useServerContent";
 import LogoSvg from "@/imports/Group1-1/index";
 import svgPaths from "@/imports/Group1-1/svg-yxzi5u9lke";
@@ -350,24 +351,26 @@ function TagList({ tags, color }: { tags: string[]; color: string }) {
 }
 
 function PosterPlaceholder({ code, color, label }: { code: string; color: string; label?: string }) {
+  const { t } = useLanguage();
   return (
     <div className="flex items-center justify-center" style={{ height: 300, border: `1px solid ${color}20`, background: color+"05" }}>
       <div className="text-center">
         <div className="font-['VT323'] text-6xl mb-2" style={{ color: color+"30" }}>{code}</div>
-        <div className="text-xs" style={{ color: color+"30" }}>{label ?? "IMAGE TBD"}</div>
+        <div className="text-xs" style={{ color: color+"30" }}>{t(label ?? "IMAGE TBD")}</div>
       </div>
     </div>
   );
 }
 
 function ModalOverlay({ color, code, onClose, children }: { color: string; code: string; onClose: () => void; children: React.ReactNode }) {
+  const { t } = useLanguage();
   return (
     <div className="fixed inset-0 z-[100] flex items-center justify-center p-4" style={{ background: "rgba(0,0,0,0.92)" }} onClick={onClose}>
       <div className="absolute inset-0 pointer-events-none" style={{ background: "repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.06) 2px, rgba(0,0,0,0.06) 4px)" }} />
       <div className="relative border font-['Share_Tech_Mono'] w-full max-w-3xl flex flex-col" style={{ borderColor: color+"50", background: "#020202", boxShadow: `0 0 60px ${color}25`, maxHeight: "90vh" }} onClick={e => e.stopPropagation()}>
         <div className="flex-shrink-0 flex items-center justify-between px-5 py-3" style={{ borderBottom: `1px solid ${color}25`, background: "#020202" }}>
           <span className="text-xs" style={{ color: color+"60" }}>{code} // DETAIL VIEW</span>
-          <button onClick={onClose} className="text-xs px-3 py-1 transition-all" style={{ color, border: `1px solid ${color}40` }} onMouseEnter={e => (e.currentTarget.style.background = color+"20")} onMouseLeave={e => (e.currentTarget.style.background = "transparent")}>[ CLOSE ]</button>
+          <button onClick={onClose} className="text-xs px-3 py-1 transition-all" style={{ color, border: `1px solid ${color}40` }} onMouseEnter={e => (e.currentTarget.style.background = color+"20")} onMouseLeave={e => (e.currentTarget.style.background = "transparent")}>{t("[ CLOSE ]")}</button>
         </div>
         <div className="overflow-y-auto flex-1">{children}</div>
       </div>
@@ -542,6 +545,7 @@ interface EventData {
 
 // ── Member card ───────────────────────────────────────────────────────────────
 function MemberCard({ member, onEdit, onDelete }: { member: Member; onEdit: () => void; onDelete: () => void }) {
+  const { t } = useLanguage();
   const admin = useAdmin();
   const [hovered, setHovered] = useState(false);
   const [revealed, setRevealed] = useState(false);
@@ -584,8 +588,8 @@ function MemberCard({ member, onEdit, onDelete }: { member: Member; onEdit: () =
           <div className="font-['VT323'] text-3xl mb-1 leading-tight break-words" style={{ color: member.color, textShadow:`0 0 15px ${member.color}80`, wordBreak:"break-word" }}>
             {member.codename}
           </div>
-          <div className="text-xs mb-2 leading-snug" style={{ color: member.color+"80" }}>{member.role}</div>
-          <div className="text-xs leading-relaxed mb-3 flex-1" style={{ color: member.color+"90" }}>{member.bio}</div>
+          <div className="text-xs mb-2 leading-snug" style={{ color: member.color+"80" }}>{t(member.role)}</div>
+          <div className="text-xs leading-relaxed mb-3 flex-1" style={{ color: member.color+"90" }}>{t(member.bio)}</div>
 
           <div className="space-y-1 text-xs mt-auto">
             <div className="flex justify-between items-center px-2 py-1 gap-2" style={{ borderTop:`1px solid ${member.color}15`, borderBottom:`1px solid ${member.color}15` }}>
@@ -593,9 +597,9 @@ function MemberCard({ member, onEdit, onDelete }: { member: Member; onEdit: () =
               <span className="text-right truncate" style={{ color: member.color }}>@{member.instagram}</span>
             </div>
             <div className="flex justify-between items-start px-2 py-1 gap-2" style={{ borderBottom:`1px solid ${member.color}15` }}>
-              <span className="flex-shrink-0" style={{ color: member.color+"50" }}>CONTACT</span>
+              <span className="flex-shrink-0" style={{ color: member.color+"50" }}>{t("CONTACT")}</span>
               <button onClick={() => setRevealed(r=>!r)} className="transition-all duration-300 text-right break-all text-xs" style={{ color: revealed ? member.color : member.color+"40" }}>
-                {revealed ? member.contact : "[ REVEAL ]"}
+                {revealed ? member.contact : t("[ REVEAL ]")}
               </button>
             </div>
           </div>
@@ -607,12 +611,13 @@ function MemberCard({ member, onEdit, onDelete }: { member: Member; onEdit: () =
 
 // ── Shared display components ─────────────────────────────────────────────────
 function DetailGrid({ details, color }: { details: { label: string; value: string }[]; color: string }) {
+  const { t } = useLanguage();
   return (
     <div className="space-y-2 pt-2" style={{ borderTop:`1px solid ${color}20` }}>
       {details.map((d) => (
         <div key={d.label} className="grid grid-cols-3 gap-2 text-xs py-1" style={{ borderBottom:`1px solid ${color}10` }}>
-          <span style={{ color:color+"50" }}>{d.label}</span>
-          <span className="col-span-2" style={{ color }}>{d.value}</span>
+          <span style={{ color:color+"50" }}>{t(d.label)}</span>
+          <span className="col-span-2" style={{ color }}>{t(d.value)}</span>
         </div>
       ))}
     </div>
@@ -641,6 +646,7 @@ function CreditsBlock({ author, organizer, editLog, color }: { author: string; o
 }
 
 function ProjectCard({ project }: { project: Project }) {
+  const { t } = useLanguage();
   const isKirin = project.code === "PRJ-001" || /(?:girin|kirin|kirun|기린)/i.test(project.title);
   const website = project.website || (isKirin ? "https://jangj864.github.io/kirun_university/" : project.code === "PRJ-002" ? "https://jangj864.github.io/unicorn-vs-dragon/" : null);
   const isUnicorn = project.code === "PRJ-002" || project.website === "https://jangj864.github.io/unicorn-vs-dragon/";
@@ -665,22 +671,22 @@ function ProjectCard({ project }: { project: Project }) {
         <div className="p-4 flex flex-col flex-1">
           <div className="flex items-start justify-between mb-3">
             <div>
-              <div className="text-xs mb-1" style={{ color: project.color + "60" }}>{project.code} // {project.category}</div>
-              <div className="text-2xl" style={{ fontFamily: "'Galmuri11', monospace", color: project.color, textShadow: `0 0 10px ${project.color}60` }}>{project.title}</div>
+              <div className="text-xs mb-1" style={{ color: project.color + "60" }}>{project.code} // {t(project.category)}</div>
+              <div className="text-2xl" style={{ fontFamily: "'Galmuri11', monospace", color: project.color, textShadow: `0 0 10px ${project.color}60` }}>{t(project.title)}</div>
             </div>
             <div className="text-right">
               <div className="text-xs" style={{ color: project.color + "50" }}>{project.year}</div>
               <div className="text-xs mt-1 px-2 py-0.5" style={{
                 color: getStatusColor(PROJECT_STATUS_COLOR, project.status),
                 border: `1px solid ${getStatusColor(PROJECT_STATUS_COLOR, project.status)}40`,
-              }}>{project.status}</div>
+              }}>{t(project.status)}</div>
             </div>
           </div>
-          <div className="text-xs leading-relaxed mb-3" style={{ color: project.color + "90" }}>{project.desc}</div>
+          <div className="text-xs leading-relaxed mb-3" style={{ color: project.color + "90" }}>{t(project.desc)}</div>
           <TagList tags={project.tags} color={project.color} />
           <div className="flex-1" />
-          {website && <a href={website} target="_blank" rel="noopener noreferrer" onClick={e => e.stopPropagation()} className="flex items-center justify-center min-h-11 px-4 mt-4 text-sm" style={{ color: "#000", background: project.color, border: `1px solid ${project.color}`, textDecoration: "none" }}>VISIT WEBSITE ↗</a>}
-          <div className="text-xs mt-3" style={{ color: project.color + "40" }}>[ CLICK TO VIEW DETAILS ▼ ]</div>
+          {website && <a href={website} target="_blank" rel="noopener noreferrer" onClick={e => e.stopPropagation()} className="flex items-center justify-center min-h-11 px-4 mt-4 text-sm" style={{ color: "#000", background: project.color, border: `1px solid ${project.color}`, textDecoration: "none" }}>{t("VISIT WEBSITE ↗")}</a>}
+          <div className="text-xs mt-3" style={{ color: project.color + "40" }}>{t("[ CLICK TO VIEW DETAILS ▼ ]")}</div>
         </div>
       </div>
 
@@ -690,7 +696,7 @@ function ProjectCard({ project }: { project: Project }) {
             <div>
               {poster ? (
                 <div className="relative" style={{ border: `1px solid ${project.color}30` }}>
-                  <img src={poster} alt={project.title} className="w-full object-contain" />
+                  <img src={poster} alt={t(project.title)} className="w-full object-contain" />
                   <div className="absolute inset-0 pointer-events-none" style={{ background: "repeating-linear-gradient(0deg, transparent, transparent 3px, rgba(0,0,0,0.06) 3px, rgba(0,0,0,0.06) 4px)" }} />
                 </div>
               ) : (
@@ -699,15 +705,15 @@ function ProjectCard({ project }: { project: Project }) {
             </div>
             <div className="space-y-4">
               <div className="text-4xl leading-snug" style={{ fontFamily: "'Galmuri11', monospace", color: project.color, textShadow: `0 0 20px ${project.color}60` }}>
-                {project.title}
+                {t(project.title)}
               </div>
               <div className="flex gap-3 text-xs">
                 <span style={{ color: project.color + "60" }}>{project.year}</span>
-                <span style={{ color: getStatusColor(PROJECT_STATUS_COLOR, project.status), border: "1px solid currentColor", padding: "0 6px" }}>{project.status}</span>
+                <span style={{ color: getStatusColor(PROJECT_STATUS_COLOR, project.status), border: "1px solid currentColor", padding: "0 6px" }}>{t(project.status)}</span>
               </div>
-              <div className="text-xs leading-relaxed" style={{ color: project.color + "90" }}>{project.desc}</div>
+              <div className="text-xs leading-relaxed" style={{ color: project.color + "90" }}>{t(project.desc)}</div>
               <DetailGrid details={project.details} color={project.color}/>
-              {website && <a href={website} target="_blank" rel="noopener noreferrer" className="inline-flex items-center min-h-11 px-3 text-xs" style={{ color: project.color, border: `1px solid ${project.color}60` }}>VISIT WEBSITE ↗</a>}
+              {website && <a href={website} target="_blank" rel="noopener noreferrer" className="inline-flex items-center min-h-11 px-3 text-xs" style={{ color: project.color, border: `1px solid ${project.color}60` }}>{t("VISIT WEBSITE ↗")}</a>}
               <div className="pt-2"><TagList tags={project.tags} color={project.color} /></div>
               <CreditsBlock author={project.author} organizer={project.organizer} editLog={project.editLog||[]} color={project.color}/>
             </div>
@@ -719,6 +725,7 @@ function ProjectCard({ project }: { project: Project }) {
 }
 
 function EventCard({ event }: { event: EventData }) {
+  const { t } = useLanguage();
   const [open, setOpen] = useState(false);
   const [hovered, setHovered] = useState(false);
 
@@ -741,21 +748,21 @@ function EventCard({ event }: { event: EventData }) {
           <span className="px-2 py-0.5" style={{
             color: getStatusColor(EVENT_STATUS_COLOR, event.status),
             border: `1px solid ${getStatusColor(EVENT_STATUS_COLOR, event.status)}40`,
-          }}>{event.status}</span>
+          }}>{t(event.status)}</span>
         </div>
         <div className="p-5">
           <div className="flex items-start justify-between mb-3">
             <div className="text-2xl" style={{ fontFamily: "'Galmuri11', monospace", color: event.color, textShadow: `0 0 12px ${event.color}60` }}>
-              {event.title}
+              {t(event.title)}
             </div>
             <div className="text-right text-xs space-y-1" style={{ color: event.color + "60" }}>
-              <div>{event.date}</div>
-              <div>{event.location}</div>
+              <div>{t(event.date)}</div>
+              <div>{t(event.location)}</div>
             </div>
           </div>
-          <div className="text-xs leading-relaxed mb-4" style={{ color: event.color + "90" }}>{event.desc}</div>
+          <div className="text-xs leading-relaxed mb-4" style={{ color: event.color + "90" }}>{t(event.desc)}</div>
           <TagList tags={event.tags} color={event.color} />
-          <div className="text-xs mt-3" style={{ color: event.color + "50" }}>[ CLICK TO VIEW DETAILS ▼ ]</div>
+          <div className="text-xs mt-3" style={{ color: event.color + "50" }}>{t("[ CLICK TO VIEW DETAILS ▼ ]")}</div>
         </div>
       </div>
 
@@ -774,9 +781,9 @@ function EventCard({ event }: { event: EventData }) {
             </div>
             <div className="space-y-4">
               <div className="text-4xl leading-snug" style={{ fontFamily: "'Galmuri11', monospace", color: event.color, textShadow: `0 0 20px ${event.color}60` }}>
-                {event.title}
+                {t(event.title)}
               </div>
-              <div className="text-xs leading-relaxed" style={{ color: event.color + "90" }}>{event.desc}</div>
+              <div className="text-xs leading-relaxed" style={{ color: event.color + "90" }}>{t(event.desc)}</div>
               <DetailGrid details={event.details} color={event.color}/>
               <div className="pt-2"><TagList tags={event.tags} color={event.color} /></div>
               <CreditsBlock author={event.author} organizer={event.organizer} editLog={event.editLog||[]} color={event.color}/>
@@ -1240,6 +1247,7 @@ function EventEditor({ event, onSave, onClose }: { event: EventData; onSave: (e:
 // ── Tab content components ────────────────────────────────────────────────────
 
 function ProjectsTab({ projects, setProjects }: { projects: Project[]; setProjects: ContentSetter<Project> }) {
+  const { language } = useLanguage();
   const admin = useAdmin();
   const [editingProject, setEditingProject] = useState<Project | null>(null);
   const [isAddingProject, setIsAddingProject] = useState(false);
@@ -1247,7 +1255,7 @@ function ProjectsTab({ projects, setProjects }: { projects: Project[]; setProjec
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between mb-2">
-        <div className="text-xs" style={{ color: `${PRIMARY}40` }}>// {projects.length} PROJECTS FOUND IN MANIFEST</div>
+        <div className="text-xs" style={{ color: `${PRIMARY}40` }}>{language === "ko" ? `// 프로젝트 ${projects.length}개` : `// ${projects.length} PROJECTS FOUND IN MANIFEST`}</div>
         <AddButton onClick={() => { setEditingProject({ code: `PRJ-${crypto.randomUUID()}`, title:"", category:"", desc:"", status:"ACTIVE", year:"2026", color: PRIMARY, tags:[], poster:null, details:[], author:"", organizer:"", editLog:[] }); setIsAddingProject(true); }} />
       </div>
       <div className="grid md:grid-cols-2 gap-4">
@@ -1297,10 +1305,11 @@ function MembersTab({ members, setMembers, editingMemberIdx, setEditingMemberIdx
   isAddingMember: boolean;
   setIsAddingMember: React.Dispatch<React.SetStateAction<boolean>>;
 }) {
+  const { language } = useLanguage();
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between mb-2">
-        <div className="text-xs" style={{ color: `${PRIMARY}40` }}>// {members.length} ENTITIES IDENTIFIED — HOVER TO INTERACT</div>
+        <div className="text-xs" style={{ color: `${PRIMARY}40` }}>{language === "ko" ? `// 함께하는 멤버 ${members.length}명` : `// ${members.length} ENTITIES IDENTIFIED — HOVER TO INTERACT`}</div>
         <AddButton onClick={() => {
           const newIdx = members.length;
           setIsAddingMember(true);
@@ -1332,6 +1341,7 @@ function MembersTab({ members, setMembers, editingMemberIdx, setEditingMemberIdx
 }
 
 function EventsTab({ events, setEvents }: { events: EventData[]; setEvents: ContentSetter<EventData> }) {
+  const { language } = useLanguage();
   const admin = useAdmin();
   const [editingEvent, setEditingEvent] = useState<EventData | null>(null);
   const [isAddingEvent, setIsAddingEvent] = useState(false);
@@ -1339,7 +1349,7 @@ function EventsTab({ events, setEvents }: { events: EventData[]; setEvents: Cont
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between mb-2">
-        <div className="text-xs" style={{ color: `${PRIMARY}40` }}>// {events.length} EVENTS SCHEDULED — COORDINATES CONFIRMED</div>
+        <div className="text-xs" style={{ color: `${PRIMARY}40` }}>{language === "ko" ? `// 이벤트 ${events.length}개` : `// ${events.length} EVENTS SCHEDULED — COORDINATES CONFIRMED`}</div>
         <AddButton onClick={() => { setEditingEvent({ code: `EVT-${crypto.randomUUID()}`, title:"", date:"TBD", location:"", desc:"", status:"SCHEDULED", color: PRIMARY, tags:[], poster:null, details:[], author:"", organizer:"", editLog:[] }); setIsAddingEvent(true); }} />
       </div>
       <div className="grid md:grid-cols-1 gap-4 max-w-2xl">
@@ -1382,6 +1392,7 @@ function EventsTab({ events, setEvents }: { events: EventData[]; setEvents: Cont
 }
 
 function AboutTab() {
+  const { t } = useLanguage();
   return (
     <div className="space-y-8 max-w-2xl mx-auto sm:mx-0">
       <div className="flex flex-col sm:flex-row items-center text-center sm:text-left gap-4 sm:gap-6">
@@ -1389,9 +1400,7 @@ function AboutTab() {
           <LogoSvg />
         </div>
         <div>
-          <div className="text-xs mb-1 font-['Share_Tech_Mono']" style={{ color: `${PRIMARY}50` }}>
-            ENTITY // COLLECTIVE
-          </div>
+          <div className="text-xs mb-1 font-['Share_Tech_Mono']" style={{ color: `${PRIMARY}50` }}>{t("ENTITY // COLLECTIVE")} </div>
           <div className="font-['VT323'] text-5xl leading-none" style={{ color: PRIMARY, textShadow: `0 0 20px ${PRIMARY}80` }}>
             5th Ave
           </div>
@@ -1402,19 +1411,9 @@ function AboutTab() {
       </div>
 
       <div className="space-y-3 font-['Share_Tech_Mono'] text-xs leading-relaxed" style={{ borderLeft: `2px solid ${PRIMARY}25`, paddingLeft: "1.25rem" }}>
-        <p style={{ color: PRIMARY }}>
-          5th Ave Bipolar Kids is an underground creative collective based in Seoul, Daegu, and New York.
-          We work across music, visual art, writing, design, and performance, crossing boundaries between genres.
-        </p>
-        <p style={{ color: `${PRIMARY}80` }}>
-          Founded as a band in 2026, we somehow ended up with more staff than musicians, thanks to low participation and a shortage of instrumentalists.
-          Three months in, we still have no proper EP, and the staff still outnumber the players.
-          We keep making merch with no buyers, and the sellers have no intention of selling it either.
-        </p>
-        <p style={{ color: `${PRIMARY}60` }}>
-          Still, we keep going. Starting from our identity as a band, 5th Ave Bipolar Kids
-          is growing into an arts community spanning music, visual art, design, publishing, and performance.
-        </p>
+        <p style={{ color: PRIMARY }}>{t("5th Ave Bipolar Kids is an underground creative collective based in Seoul, Daegu, and New York. We work across music, visual art, writing, design, and performance, crossing boundaries between genres.")} </p>
+        <p style={{ color: `${PRIMARY}80` }}>{t("Founded as a band in 2026, we somehow ended up with more staff than musicians, thanks to low participation and a shortage of instrumentalists. Three months in, we still have no proper EP, and the staff still outnumber the players. We keep making merch with no buyers, and the sellers have no intention of selling it either.")} </p>
+        <p style={{ color: `${PRIMARY}60` }}>{t("Still, we keep going. Starting from our identity as a band, 5th Ave Bipolar Kids is growing into an arts community spanning music, visual art, design, publishing, and performance.")} </p>
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 font-['Share_Tech_Mono']">
@@ -1422,18 +1421,18 @@ function AboutTab() {
           { label: "LOCATION", value: "Seoul / Daegu / New York" },
           { label: "FOUNDED", value: "2026" },
         ].map((item) => (
-          <div key={item.label} className="p-3 border" style={{ borderColor: `${PRIMARY}20`, background: "rgba(0,0,0,0.55)", backdropFilter: "blur(8px)", WebkitBackdropFilter: "blur(8px)" }}>
-            <div className="text-xs mb-1" style={{ color: `${PRIMARY}40` }}>{item.label}</div>
-            <div className="text-base" style={{ color: PRIMARY, textShadow: `0 0 8px ${PRIMARY}60` }}>{item.value}</div>
+          <div key={t(item.label)} className="p-3 border" style={{ borderColor: `${PRIMARY}20`, background: "rgba(0,0,0,0.55)", backdropFilter: "blur(8px)", WebkitBackdropFilter: "blur(8px)" }}>
+            <div className="text-xs mb-1" style={{ color: `${PRIMARY}40` }}>{t(item.label)}</div>
+            <div className="text-base" style={{ color: PRIMARY, textShadow: `0 0 8px ${PRIMARY}60` }}>{t(item.value)}</div>
           </div>
         ))}
       </div>
 
       <div className="border p-5 font-['Share_Tech_Mono']" style={{ borderColor: `${PRIMARY}30`, background: "rgba(0,0,0,0.6)", backdropFilter: "blur(12px)", WebkitBackdropFilter: "blur(12px)" }}>
-        <div className="text-xs mb-4" style={{ color: `${PRIMARY}60` }}>■ CONTACT // SECURE CHANNEL</div>
+        <div className="text-xs mb-4" style={{ color: `${PRIMARY}60` }}>{t("■ CONTACT // SECURE CHANNEL")}</div>
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
           <div>
-            <div className="text-xs mb-1" style={{ color: `${PRIMARY}50` }}>EMAIL</div>
+            <div className="text-xs mb-1" style={{ color: `${PRIMARY}50` }}>{t("EMAIL")}</div>
             <a
               href="mailto:ddoazoo@gmail.com"
               className="text-lg transition-all duration-200"
@@ -1445,15 +1444,13 @@ function AboutTab() {
             </a>
           </div>
           <div className="text-xs" style={{ color: `${PRIMARY}30` }}>
-            <div>RESPONSE TIME</div>
-            <div style={{ color: `${PRIMARY}60` }}>UNKNOWN</div>
+            <div>{t("RESPONSE TIME")}</div>
+            <div style={{ color: `${PRIMARY}60` }}>{t("UNKNOWN")}</div>
           </div>
         </div>
-        <div className="mt-4 text-xs" style={{ color: `${PRIMARY}30`, borderTop: `1px solid ${PRIMARY}15`, paddingTop: "0.75rem" }}>
-          // BUSINESS INQUIRIES, COLLABORATIONS, AND EVERYTHING ELSE
-        </div>
+        <div className="mt-4 text-xs" style={{ color: `${PRIMARY}30`, borderTop: `1px solid ${PRIMARY}15`, paddingTop: "0.75rem" }}>{t("// BUSINESS INQUIRIES, COLLABORATIONS, AND EVERYTHING ELSE")} </div>
         <div className="mt-5" style={{ borderTop: `1px solid ${PRIMARY}15`, paddingTop: "1rem" }}>
-          <div className="text-xs mb-3" style={{ color: `${PRIMARY}60` }}>■ INSTAGRAM</div>
+          <div className="text-xs mb-3" style={{ color: `${PRIMARY}60` }}>{t("■ INSTAGRAM")}</div>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             {["5th_ave_bipolar_kids", "bipolarkids.kr"].map(handle => (
               <a
@@ -1477,6 +1474,7 @@ function AboutTab() {
 }
 
 function CalendarTab({ events, calEvents, setCalEvents }: { events: EventData[]; calEvents: CalEvent[]; setCalEvents: ContentSetter<CalEvent> }) {
+  const { t } = useLanguage();
   const admin = useAdmin();
   const [calYear, setCalYear] = useState(() => new Date().getFullYear());
   const [calMonth, setCalMonth] = useState(() => new Date().getMonth());
@@ -1525,7 +1523,7 @@ function CalendarTab({ events, calEvents, setCalEvents }: { events: EventData[];
           className="px-4 py-2 font-['VT323'] text-2xl transition-all hover:opacity-100 opacity-70"
           style={{ border:`1px solid ${PRIMARY}50`, color: PRIMARY, background:`rgba(0,255,65,0.06)` }}>◄</button>
         <div className="font-['VT323'] text-3xl tracking-widest" style={{ color: PRIMARY, textShadow:`0 0 20px ${PRIMARY}90` }}>
-          {MONTHS[calMonth]} {calYear}
+          {t(MONTHS[calMonth])} {calYear}
         </div>
         <button onClick={() => { if (calMonth === 11) { setCalMonth(0); setCalYear(y => y+1); } else setCalMonth(m => m+1); }}
           className="px-4 py-2 font-['VT323'] text-2xl transition-all hover:opacity-100 opacity-70"
@@ -1534,7 +1532,7 @@ function CalendarTab({ events, calEvents, setCalEvents }: { events: EventData[];
 
       <div className="grid grid-cols-7 mb-1" style={{ borderBottom:`1px solid ${PRIMARY}30` }}>
         {DAYS.map(d => (
-          <div key={d} className="text-center py-2 font-['Share_Tech_Mono'] text-xs tracking-widest" style={{ color:`${PRIMARY}80` }}>{d}</div>
+          <div key={d} className="text-center py-2 font-['Share_Tech_Mono'] text-xs tracking-widest" style={{ color:`${PRIMARY}80` }}>{t(d)}</div>
         ))}
       </div>
 
@@ -1586,7 +1584,7 @@ function CalendarTab({ events, calEvents, setCalEvents }: { events: EventData[];
         })}
       </div>
 
-      <div className="mt-3 text-xs" style={{ color:`${PRIMARY}40`, fontFamily:"'Share Tech Mono',monospace" }}>{admin ? "// CLICK A DATE TO ADD AN ENTRY · CLICK AN ENTRY TO EDIT OR DELETE" : "// CALENDAR"}</div>
+      <div className="mt-3 text-xs" style={{ color:`${PRIMARY}40`, fontFamily:"'Share Tech Mono',monospace" }}>{t(admin ? "// CLICK A DATE TO ADD AN ENTRY · CLICK AN ENTRY TO EDIT OR DELETE" : "// CALENDAR")}</div>
 
       {calModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4" style={{ background:"rgba(0,0,0,0.85)" }} onClick={() => setCalModal(null)}>
@@ -1718,6 +1716,7 @@ function ExploreTab() {
 function BrandHome({ projects, events, members, onNavigate }: {
   projects: Project[]; events: EventData[]; members: Member[]; onNavigate: (tab: string) => void;
 }) {
+  const { t } = useLanguage();
   const [selected, setSelected] = useState<Project | null>(null);
   const featured = projects.filter(p => p.title && p.title !== "Untitled").slice().reverse();
   const upcoming = events.find(e => e.title && e.title !== "Untitled");
@@ -1728,64 +1727,64 @@ function BrandHome({ projects, events, members, onNavigate }: {
   return (
     <div className="brand-home">
       <section className="brand-hero" aria-labelledby="brand-heading">
-        <div className="brand-eyebrow"><span className="brand-dot" /> INDEPENDENT CREATIVE COLLECTIVE / EST. 2026</div>
+        <div className="brand-eyebrow"><span className="brand-dot" /> {t("INDEPENDENT CREATIVE COLLECTIVE / EST. 2026")}</div>
         <div className="brand-hero-grid">
           <div className="brand-hero-copy">
-            <div className="brand-coordinate">SEOUL ↔ DAEGU ↔ NEW YORK</div>
+            <div className="brand-coordinate">{t("SEOUL ↔ DAEGU ↔ NEW YORK")}</div>
             <h1 id="brand-heading"><span>5TH AVE</span>BIPOLAR<br /><em>KIDS.</em></h1>
-            <p>Different minds.<br />One collective frequency.</p>
+            <p>{t("Different minds.")}<br />{t("One collective frequency.")}</p>
             <div className="brand-actions">
-              <button className="brand-button brand-button-primary" onClick={() => onNavigate("projects")}>EXPLORE OUR WORK <span>↗</span></button>
-              <button className="brand-button" onClick={() => onNavigate("about")}>MEET THE COLLECTIVE <span>→</span></button>
+              <button className="brand-button brand-button-primary" onClick={() => onNavigate("projects")}>{t("EXPLORE OUR WORK")} <span>↗</span></button>
+              <button className="brand-button" onClick={() => onNavigate("about")}>{t("MEET THE COLLECTIVE")} <span>→</span></button>
             </div>
           </div>
           <div className="brand-emblem" aria-label="5th Ave Bipolar Kids collective emblem" role="img">
             <div className="brand-emblem-top"><span>5ABK / COLLECTIVE SIGNAL</span><span>001</span></div>
             <div className="brand-emblem-art"><LogoSvg /></div>
-            <div className="brand-emblem-bottom"><span>INDEPENDENT BY NATURE.</span><span>CONNECTED BY CHOICE.</span></div>
+            <div className="brand-emblem-bottom"><span>{t("INDEPENDENT BY NATURE.")}</span><span>{t("CONNECTED BY CHOICE.")}</span></div>
           </div>
         </div>
-        <div className="brand-hero-bottom"><span>MUSIC / ART / DESIGN / PUBLISHING / PERFORMANCE</span><a href="#selected-work">SCROLL TO DISCOVER ↓</a></div>
+        <div className="brand-hero-bottom"><span>{t("MUSIC / ART / DESIGN / PUBLISHING / PERFORMANCE")}</span><a href="#selected-work">{t("SCROLL TO DISCOVER ↓")}</a></div>
       </section>
 
       <section className="brand-intro" aria-label="About the collective">
-        <span className="brand-section-index">01 / WHO WE ARE</span>
-        <div><h2>A shared space for<br /><span>ideas that cross boundaries.</span></h2>
-          <p>We started as a band. Now, we bring together musicians, designers, artists, and writers across Seoul, Daegu, and New York. From independent publications to digital experiments, we make room for different ways of creating.</p>
-          <button className="brand-text-link" onClick={() => onNavigate("members")}>MEET OUR PEOPLE ↗</button>
+        <span className="brand-section-index">{t("01 / WHO WE ARE")}</span>
+        <div><h2>{t("A shared space for")}<br /><span>{t("ideas that cross boundaries.")}</span></h2>
+          <p>{t("We started as a band. Now, we bring together musicians, designers, artists, and writers across Seoul, Daegu, and New York. From independent publications to digital experiments, we make room for different ways of creating.")}</p>
+          <button className="brand-text-link" onClick={() => onNavigate("members")}>{t("MEET OUR PEOPLE ↗")}</button>
         </div>
       </section>
 
       <section id="selected-work" className="brand-work" aria-labelledby="work-heading">
-        <div className="brand-section-header"><div><span className="brand-section-index">02 / SELECTED WORK</span><h2 id="work-heading">Made by the collective.</h2></div><button className="brand-text-link" onClick={() => onNavigate("projects")}>ALL PROJECTS ↗</button></div>
+        <div className="brand-section-header"><div><span className="brand-section-index">{t("02 / SELECTED WORK")}</span><h2 id="work-heading">{t("Made by the collective.")}</h2></div><button className="brand-text-link" onClick={() => onNavigate("projects")}>{t("ALL PROJECTS ↗")}</button></div>
         <div className="brand-work-list">
           {featured.map((p, index) => <article className="brand-work-row" key={p.code} style={{ "--project-color": p.color } as React.CSSProperties}>
             <span className="brand-work-number">0{index + 1}</span>
-            <button className="brand-work-open" onClick={() => setSelected(p)} aria-label={`View ${p.title} details`}>
-              <span className="brand-work-meta">{p.category || "DIGITAL EXPERIENCE"} / {p.year || "2026–"}</span>
-              <h3>{p.title}</h3><p>{p.desc}</p>
+            <button className="brand-work-open" onClick={() => setSelected(p)} aria-label={`View ${t(p.title)} details`}>
+              <span className="brand-work-meta">{t(p.category || "DIGITAL EXPERIENCE")} / {p.year || "2026–"}</span>
+              <h3>{t(p.title)}</h3><p>{t(p.desc)}</p>
             </button>
-            <button className="brand-work-arrow" aria-label={`Open ${p.title}`} onClick={() => setSelected(p)}>↗</button>
+            <button className="brand-work-arrow" aria-label={`Open ${t(p.title)}`} onClick={() => setSelected(p)}>↗</button>
           </article>)}
         </div>
       </section>
 
       <section className="brand-community" aria-label="Collective and happenings">
-        <div className="brand-community-people"><span className="brand-section-index">03 / THE PEOPLE BEHIND IT</span><h2>Many voices.<br /><span>Shared energy.</span></h2>
+        <div className="brand-community-people"><span className="brand-section-index">{t("03 / THE PEOPLE BEHIND IT")}</span><h2>{t("Many voices.")}<br /><span>{t("Shared energy.")}</span></h2>
           <div className="brand-member-names">{members.slice(0, 6).map(m => <span key={m.codename} style={{ color: m.color }}>{m.codename}</span>)}</div>
-          <button className="brand-text-link" onClick={() => onNavigate("members")}>DISCOVER THE FULL CREW ↗</button>
+          <button className="brand-text-link" onClick={() => onNavigate("members")}>{t("DISCOVER THE FULL CREW ↗")}</button>
         </div>
-        <div className="brand-happening"><span className="brand-section-index">ON OUR RADAR / EVENTS</span><span className="brand-event-status">{upcoming?.date === "TBD" ? "DATE TO BE ANNOUNCED" : upcoming?.date || "MORE TO COME"}</span><h3>{upcoming?.title || "The next gathering."}</h3><p>{upcoming?.desc || "Keep an eye on this space for our next collective gathering."}</p><button className="brand-text-link" onClick={() => onNavigate("events")}>EVENTS & GATHERINGS ↗</button></div>
+        <div className="brand-happening"><span className="brand-section-index">{t("ON OUR RADAR / EVENTS")}</span><span className="brand-event-status">{t(upcoming?.date === "TBD" ? "DATE TO BE ANNOUNCED" : upcoming?.date || "MORE TO COME")}</span><h3>{t(upcoming?.title || "The next gathering.")}</h3><p>{t(upcoming?.desc || "Keep an eye on this space for our next collective gathering.")}</p><button className="brand-text-link" onClick={() => onNavigate("events")}>{t("EVENTS & GATHERINGS ↗")}</button></div>
       </section>
 
-      <section className="brand-contact" aria-labelledby="contact-heading"><span className="brand-section-index">04 / KEEP THE CONVERSATION GOING</span><h2 id="contact-heading">Have something<br />in mind<span>?</span></h2><div className="brand-contact-bottom"><p>Collaborations, new ideas, and everything in between.</p><a className="brand-button brand-button-primary" href="mailto:ddoazoo@gmail.com">GET IN TOUCH <span>↗</span></a></div></section>
-      <div className="brand-home-end"><span>5TH AVE BIPOLAR KIDS</span><button onClick={() => onNavigate("explore")} className="brand-text-link">OUR CREATIVE NETWORK ↗</button></div>
+      <section className="brand-contact" aria-labelledby="contact-heading"><span className="brand-section-index">{t("04 / KEEP THE CONVERSATION GOING")}</span><h2 id="contact-heading">{t("Have something")}<br />{t("in mind")}<span>?</span></h2><div className="brand-contact-bottom"><p>{t("Collaborations, new ideas, and everything in between.")}</p><a className="brand-button brand-button-primary" href="mailto:ddoazoo@gmail.com">{t("GET IN TOUCH")} <span>↗</span></a></div></section>
+      <div className="brand-home-end"><span>5TH AVE BIPOLAR KIDS</span><button onClick={() => onNavigate("explore")} className="brand-text-link">{t("OUR CREATIVE NETWORK ↗")}</button></div>
       {selected && <ModalOverlay color={selected.color} code={selected.code} onClose={() => setSelected(null)}>
         <div className="brand-project-detail">
-          {(selected.poster || previews[selected.code]) && <img src={selected.poster || previews[selected.code]} alt={selected.title} />}
-          <span className="brand-section-index">{selected.category} / {selected.year}</span><h2 style={{ color: selected.color }}>{selected.title}</h2><p>{selected.desc}</p><TagList tags={selected.tags} color={selected.color} />
+          {(selected.poster || previews[selected.code]) && <img src={selected.poster || previews[selected.code]} alt={t(selected.title)} />}
+          <span className="brand-section-index">{t(selected.category)} / {selected.year}</span><h2 style={{ color: selected.color }}>{t(selected.title)}</h2><p>{t(selected.desc)}</p><TagList tags={selected.tags} color={selected.color} />
           <DetailGrid details={selected.details} color={selected.color} />
-          {(selected.website || selected.code === "PRJ-001") && <a className="brand-button" href={selected.website || "https://jangj864.github.io/kirun_university/"} target="_blank" rel="noopener noreferrer">VISIT WEBSITE ↗</a>}
+          {(selected.website || selected.code === "PRJ-001") && <a className="brand-button" href={selected.website || "https://jangj864.github.io/kirun_university/"} target="_blank" rel="noopener noreferrer">{t("VISIT WEBSITE ↗")}</a>}
         </div>
       </ModalOverlay>}
     </div>
@@ -1796,10 +1795,11 @@ function BrandHome({ projects, events, members, onNavigate }: {
 type Page = "boot" | "auth" | "denied" | "dashboard" | "crew";
 
 export default function App() {
-  return <AdminProvider><Site /></AdminProvider>;
+  return <LanguageProvider><AdminProvider><Site /></AdminProvider></LanguageProvider>;
 }
 
 function Site() {
+  const { t, language, setLanguage } = useLanguage();
   const admin = useAdmin();
   const [page, setPage] = useState<Page>("crew");
   const [activeTab, setActiveTab] = useState("home");
@@ -1857,8 +1857,12 @@ function Site() {
       <div className="relative z-20 max-w-6xl mx-auto px-4 sm:px-8 py-5 sm:py-8">
         <header className="brand-header">
           <button className="brand-wordmark" onClick={() => navigate("home")} aria-label="5th Ave Bipolar Kids home"><span>5TH AVE</span><strong>BIPOLAR KIDS</strong></button>
-          <div className="brand-header-note">INDEPENDENT MINDS.<br />CONNECTED FREQUENCIES.</div>
-          <a className="brand-header-contact" href="mailto:ddoazoo@gmail.com">LET’S TALK ↗</a>
+          <div className="brand-header-note">{t("INDEPENDENT MINDS.")}<br />{t("CONNECTED FREQUENCIES.")}</div>
+          <div className="brand-language-switch" role="group" aria-label={language === "ko" ? "언어 선택" : "Language selection"}>
+            <button lang="ko" aria-pressed={language === "ko"} onClick={() => setLanguage("ko")}>한국어</button>
+            <button lang="en" aria-pressed={language === "en"} onClick={() => setLanguage("en")}>EN</button>
+          </div>
+          <a className="brand-header-contact" href="mailto:ddoazoo@gmail.com">{t("LET’S TALK ↗")}</a>
         </header>
 
         {page === "boot" && (
@@ -1958,12 +1962,12 @@ function Site() {
                     background: activeTab === tab.id ? `rgba(0,255,65,0.12)` : "transparent",
                     textShadow: activeTab === tab.id ? `0 0 10px ${PRIMARY}` : "none",
                   }}>
-                  {tab.label}
+                  {t(tab.label)}
                 </button>
               ))}
             </nav>
 
-            {stores.some(store => store.busy) && <p role="status" className="text-xs" style={{ color: PRIMARY }}>Saving to server…</p>}
+            {stores.some(store => store.busy) && <p role="status" className="text-xs" style={{ color: PRIMARY }}>{t("Saving to server…")}</p>}
             {stores.filter(store => store.error).map((store, index) => <p key={index} role="alert" className="fixed bottom-4 left-4 right-4 z-[120] border bg-black p-3 text-xs" style={{ color: DANGER }}>{store.error}</p>)}
             <fieldset disabled={stores.some(store => store.busy)} className="border-0 p-0 m-0 min-w-0">
             {activeTab === "home" && <BrandHome projects={projects} events={events} members={members} onNavigate={navigate} />}
@@ -1986,7 +1990,7 @@ function Site() {
 
             <div className="pt-4 text-xs flex justify-between" style={{ borderTop: `1px solid ${PRIMARY}15`, color: `${PRIMARY}30` }}>
               <span>5TH AVE BIPOLAR KIDS // ALL RIGHTS RESERVED. ALL WRONGS TOO.</span>
-              <button className="min-h-11" onClick={() => setPage("auth")}>[ ACCESS TERMINAL ]</button>
+              <button className="min-h-11" onClick={() => setPage("auth")}>{t("[ ACCESS TERMINAL ]")}</button>
             </div>
           </div>
         )}

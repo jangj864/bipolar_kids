@@ -1,10 +1,12 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import { backend, loginWithPin } from './backend';
+import { useLanguage } from './Language';
 
 const AdminContext = createContext(false);
 export const useAdmin = () => useContext(AdminContext);
 
 export function AdminProvider({ children }: { children: React.ReactNode }) {
+  const { t } = useLanguage();
   const [isAdmin, setIsAdmin] = useState(false);
   const [open, setOpen] = useState(false);
   const [password, setPassword] = useState('');
@@ -48,12 +50,12 @@ export function AdminProvider({ children }: { children: React.ReactNode }) {
             const result = await backend!.auth.signOut();
             if (result.error) { setMessage(result.error.message); return; }
             setIsAdmin(false);
-          }}>[ ADMIN · SIGN OUT ]</button>
-        ) : <button type="button" className="min-h-11" onClick={() => setOpen(value => !value)}>[ ADMIN LOGIN ]</button>}
+          }}>{t("[ ADMIN · SIGN OUT ]")}</button>
+        ) : <button type="button" className="min-h-11" onClick={() => setOpen(value => !value)}>{t("[ ADMIN LOGIN ]")}</button>}
         {open && !isAdmin && (
           backend ? <form onSubmit={login} className="max-w-md border border-green-500/30 p-4 space-y-3">
-            <label className="block">ADMIN CODE<input required type="password" inputMode="numeric" maxLength={4} autoComplete="off" value={password} onChange={e => setPassword(e.target.value)} className="block w-full bg-black border p-2 text-base" /></label>
-            <button disabled={busy} className="border px-4 py-3">{busy ? 'SIGNING IN…' : 'SIGN IN'}</button>
+            <label className="block">{t("ADMIN CODE")}<input required type="password" inputMode="numeric" maxLength={4} autoComplete="off" value={password} onChange={e => setPassword(e.target.value)} className="block w-full bg-black border p-2 text-base" /></label>
+            <button disabled={busy} className="border px-4 py-3">{t(busy ? 'SIGNING IN…' : 'SIGN IN')}</button>
           </form> : <p>Administrator login will be available once the server is connected.</p>
         )}
         {message && <p role="alert" className="mt-2">{message}</p>}
