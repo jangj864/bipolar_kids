@@ -30,3 +30,19 @@ html[lang="ko"] .brand-hero-copy>p{font-size:14px;line-height:2}
 html[lang="ko"] .brand-header-note{font-family:'Galmuri11',monospace;letter-spacing:0;font-size:9px;line-height:1.9}
 html[lang="ko"] .brand-navigation button{font-family:'Galmuri11',monospace;letter-spacing:0!important}
 @media(max-width:480px){.brand-header{gap:10px}.brand-header-contact{display:none}.brand-language-switch{margin-left:auto}.brand-wordmark strong{font-size:26px}.brand-language-switch button{font-size:10px;min-width:42px;padding-inline:8px}html[lang="ko"] .brand-home :is(h2,.brand-happening h3){font-size:25px}html[lang="ko"] .brand-contact h2{font-size:34px}html[lang="ko"] .brand-section-header>.brand-text-link{font-size:9px}html[lang="ko"] .brand-home :is(.brand-eyebrow,.brand-section-index){font-size:9px}}
+
+/* The current brand project sits alongside the collective's main introduction. */
+.brand-spanky-hero{border:1px solid #bc8cff65;background:#100b1b;color:#d9c4f9;min-width:0}
+.brand-spanky-top{display:flex;justify-content:space-between;gap:16px;padding:14px 18px;font-size:9px;letter-spacing:.12em;border-bottom:1px solid #bc8cff30}
+.brand-spanky-image{position:relative;display:block;aspect-ratio:1.45;overflow:hidden;background:#271251}
+.brand-spanky-image>img:first-child{width:100%;height:100%;object-fit:cover;object-position:center 45%;display:block;opacity:.92;transition:transform .3s}
+.brand-spanky-image:hover>img:first-child{transform:scale(1.03)}
+.brand-spanky-image .brand-spanky-logo{position:absolute;width:48%;height:auto;left:20px;bottom:18px;filter:brightness(0) invert(1) drop-shadow(0 2px 9px #170823);pointer-events:none}
+.brand-spanky-caption{padding:18px 20px 20px;border-top:1px solid #bc8cff30;background:linear-gradient(140deg,#28123b,#100b1b)}
+.brand-spanky-caption>span{font-size:8px;letter-spacing:.08em;color:#bc8cff}
+.brand-spanky-caption p{word-break:keep-all;overflow-wrap:break-word;font-size:12px;line-height:1.8;margin:12px 0 14px;color:#cfbde3}
+.brand-spanky-caption>a{display:inline-flex;align-items:center;min-height:44px;padding:10px 14px;border:1px solid #bc8cff80;color:#e6d7ff;text-decoration:none;font-size:10px;letter-spacing:.05em}
+.brand-spanky-caption>a:hover{background:#bc8cff15}
+html[lang="ko"] :is(.brand-spanky-top,.brand-spanky-caption>span,.brand-spanky-caption>a){font-family:'Galmuri11',monospace;letter-spacing:0;line-height:1.8}
+@media(max-width:700px){.brand-spanky-image{aspect-ratio:1.2}.brand-spanky-top{font-size:9px;padding:12px 16px}.brand-spanky-caption{padding:16px}.brand-spanky-caption>span{font-size:8px}.brand-spanky-image .brand-spanky-logo{left:16px;bottom:16px;width:52%}}
+@media(prefers-reduced-motion:reduce){.brand-spanky-image>img:first-child{transition:none}.brand-spanky-image:hover>img:first-child{transform:none}}

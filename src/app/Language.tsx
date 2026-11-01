@@ -2,6 +2,9 @@ import React, { createContext, useCallback, useContext, useEffect, useState } fr
 
 type Language = 'en' | 'ko';
 const korean: Record<string, string> = {
+ 'SPANKY is an underwear brand presented by 5th Ave Bipolar Kids.':'SPANKY는 5th Ave Bipolar Kids가 선보이는 언더웨어 브랜드입니다.',
+ 'UNDERWEAR BRAND':'언더웨어 브랜드','FEATURED PROJECT':'대표 프로젝트','DISCOVER SPANKY':'SPANKY 만나보기','VISIT SPANKY ↗':'SPANKY 웹사이트 ↗','PRESENTED BY':'선보이는 곳','CATEGORY':'분야','Underwear':'언더웨어','PRESENTED BY 5TH AVE BIPOLAR KIDS':'5TH AVE BIPOLAR KIDS가 선보입니다','SPANKY underwear collection':'SPANKY 언더웨어 컬렉션',
+
  'HOME':'홈','PROJECTS':'프로젝트','MEMBERS':'멤버','EVENTS':'이벤트','CALENDAR':'일정','ABOUT':'소개','EXPLORE':'네트워크',
  "A BAND":"밴드에서 시작한","AND A CREATIVE COLLECTIVE.":"크리에이티브 컬렉티브.","EMAIL US ↗":"메일 보내기 ↗",
  "A CREATIVE COLLECTIVE / EST. 2026":"크리에이티브 컬렉티브 / 2026년 시작",

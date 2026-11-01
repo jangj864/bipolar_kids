@@ -25,6 +25,7 @@ import DdoazooLogo from "@/imports/Vector/index";
 import velfontLogo from "@/imports/vel_font_logo.png";
 import enoLogo from "@/imports/image.png";
 import minsungLogo from "@/imports/minsung-logo.svg";
+import spankyLogo from "@/imports/spanky-logo.svg";
 import staceyNahLogo from "@/imports/stacey-nah-logo.png";
 import enoAvatar from "@/imports/image-2.png";
 
@@ -511,6 +512,7 @@ interface Member {
 interface EditLogEntry { by: string; at: string; }
 
 interface Project {
+  featured?: boolean;
   website?: string;
   code: string;
   title: string;
@@ -671,7 +673,7 @@ function ProjectCard({ project }: { project: Project }) {
         <div className="p-4 flex flex-col flex-1">
           <div className="flex items-start justify-between mb-3">
             <div>
-              <div className="text-xs mb-1" style={{ color: project.color + "60" }}>{project.code} // {t(project.category)}</div>
+              <div className="text-xs mb-1" style={{ color: project.color + "60" }}>{project.featured ? t("FEATURED PROJECT") : project.code} // {t(project.category)}</div>
               <div className="text-2xl" style={{ fontFamily: "'Galmuri11', monospace", color: project.color, textShadow: `0 0 10px ${project.color}60` }}>{t(project.title)}</div>
             </div>
             <div className="text-right">
@@ -864,6 +866,36 @@ const PROJECTS: Project[] = [
     author: "",
     organizer: "",
     editLog: [],
+  },
+  {
+    "code": "PRJ-005",
+    "title": "SPANKY",
+    "website": "https://jangj864.github.io/spanky/",
+    "category": "UNDERWEAR BRAND",
+    "year": "2026-",
+    "desc": "SPANKY is an underwear brand presented by 5th Ave Bipolar Kids.",
+    "status": "ACTIVE",
+    "color": "#bc8cff",
+    "tags": [
+      "underwear",
+      "fashion",
+      "brand"
+    ],
+    "poster": "images/spanky-preview.png",
+    "details": [
+      {
+        "label": "PRESENTED BY",
+        "value": "5th Ave Bipolar Kids"
+      },
+      {
+        "label": "CATEGORY",
+        "value": "Underwear"
+      }
+    ],
+    "author": "5th Ave Bipolar Kids",
+    "organizer": "",
+    "editLog": [],
+    "featured": true
   },
 ];
 
@@ -1246,6 +1278,10 @@ function EventEditor({ event, onSave, onClose }: { event: EventData; onSave: (e:
 
 // ── Tab content components ────────────────────────────────────────────────────
 
+function orderProjects(projects: Project[]) {
+  return [...projects].reverse().sort((a, b) => Number(!!b.featured) - Number(!!a.featured));
+}
+
 function ProjectsTab({ projects, setProjects }: { projects: Project[]; setProjects: ContentSetter<Project> }) {
   const { language } = useLanguage();
   const admin = useAdmin();
@@ -1259,7 +1295,7 @@ function ProjectsTab({ projects, setProjects }: { projects: Project[]; setProjec
         <AddButton onClick={() => { setEditingProject({ code: `PRJ-${crypto.randomUUID()}`, title:"", category:"", desc:"", status:"ACTIVE", year:"2026", color: PRIMARY, tags:[], poster:null, details:[], author:"", organizer:"", editLog:[] }); setIsAddingProject(true); }} />
       </div>
       <div className="grid md:grid-cols-2 gap-4">
-        {[...projects].reverse().map((p) => (
+        {orderProjects(projects).map((p) => (
           <div key={p.code} className="relative group flex flex-col">
             <ProjectCard project={p} />
             {admin && <div className="flex gap-0" style={{ borderTop: `1px solid ${p.color}20` }}>
@@ -1689,6 +1725,9 @@ function VelfontIcon() {
 function ExploreTab() {
   return (
     <div className="flex flex-col mx-auto" style={{ width: "min(420px, 100%)", gap: "clamp(32px, 6vw, 48px)" }}>
+      <ExploreLogoLink href="https://jangj864.github.io/spanky/" aspectRatio={1965.21 / 535.87}>
+        <img src={spankyLogo} alt="SPANKY" style={{ width: "100%", height: "100%", objectFit: "contain" }} />
+      </ExploreLogoLink>
       <ExploreLogoLink href="https://www.ddoazoo.com/" aspectRatio={5.21}>
         <DdoazooLogo />
       </ExploreLogoLink>
@@ -1715,7 +1754,8 @@ function BrandHome({ projects, events, members, onNavigate }: {
 }) {
   const { t } = useLanguage();
   const [selected, setSelected] = useState<Project | null>(null);
-  const featured = projects.filter(p => p.title && p.title !== "Untitled").slice().reverse();
+  const featured = orderProjects(projects.filter(p => p.title && p.title !== "Untitled"));
+  const mainProject = featured.find(p => p.featured && p.code === "PRJ-005");
   const upcoming = events.find(e => e.title && e.title !== "Untitled");
   const previews: Record<string, string> = {
     "PRJ-001": `${import.meta.env.BASE_URL}images/kirin-university-preview.png`,
@@ -1731,15 +1771,24 @@ function BrandHome({ projects, events, members, onNavigate }: {
             <h1 id="brand-heading"><span>5TH AVE</span>BIPOLAR<br /><em>KIDS.</em></h1>
             <p>{t("Music, books,")}<br />{t("and websites.")}</p>
             <div className="brand-actions">
-              <button className="brand-button brand-button-primary" onClick={() => onNavigate("projects")}>{t("VIEW PROJECTS")} <span>↗</span></button>
-              <button className="brand-button" onClick={() => onNavigate("about")}>{t("ABOUT US")} <span>→</span></button>
+              {mainProject ? <a className="brand-button brand-button-primary" href={mainProject.website} target="_blank" rel="noopener noreferrer">{t("DISCOVER SPANKY")} <span>↗</span></a> : <button className="brand-button brand-button-primary" onClick={() => onNavigate("projects")}>{t("VIEW PROJECTS")} <span>↗</span></button>}
+              <button className="brand-button" onClick={() => onNavigate(mainProject ? "projects" : "about")}>{t(mainProject ? "VIEW PROJECTS" : "ABOUT US")} <span>→</span></button>
             </div>
           </div>
+          {mainProject ? <aside className="brand-spanky-hero" aria-label="SPANKY featured project">
+            <div className="brand-spanky-top"><span>{t("FEATURED PROJECT")}</span><span>{mainProject.year}</span></div>
+            <a className="brand-spanky-image" href={mainProject.website} target="_blank" rel="noopener noreferrer" aria-label={t("VISIT SPANKY ↗")}>
+              <img src={`${import.meta.env.BASE_URL}images/spanky-products.png`} alt={t("SPANKY underwear collection")} />
+              <img className="brand-spanky-logo" src={spankyLogo} alt="SPANKY" />
+            </a>
+            <div className="brand-spanky-caption"><span>{t("UNDERWEAR BRAND")}</span><p>{t(mainProject.desc)}</p><a href={mainProject.website} target="_blank" rel="noopener noreferrer">{t("VISIT SPANKY ↗")}</a></div>
+          </aside> : (
           <div className="brand-emblem" aria-label="5th Ave Bipolar Kids collective emblem" role="img">
             <div className="brand-emblem-top"><span>5ABK / EST. 2026</span><span>001</span></div>
             <div className="brand-emblem-art"><LogoSvg /></div>
             <div className="brand-emblem-bottom"><span>{t("5TH AVE BIPOLAR KIDS")}</span><span>{t("SEOUL / DAEGU / NEW YORK")}</span></div>
           </div>
+          )}
         </div>
         <div className="brand-hero-bottom"><span>{t("MUSIC / ART / DESIGN / PUBLISHING / PERFORMANCE")}</span><a href="#selected-work">{t("VIEW PROJECTS ↓")}</a></div>
       </section>
