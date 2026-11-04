@@ -15,6 +15,7 @@ import JunseoAvatar from "@/imports/Group11-1/index";
 import HonggyuAvatar from "@/imports/Group10-1/index";
 import ChaeminAvatar from "@/imports/Group4-2/index";
 import ChaechaeAvatar from "@/imports/ChaechaeAvatar";
+import HooneezAvatar from "@/imports/HooneezAvatar";
 import QAvatar from "@/imports/Group2-1/index";
 import DanaAvatar from "@/imports/Group3/index";
 import HyunjuAvatar from "@/imports/Group13/index";
@@ -1048,6 +1049,16 @@ const INITIAL_MEMBERS: Member[] = [
     color: "#6699ff",
     customAvatar: ChaechaeAvatar,
     avatarAspect: 919 / 1279,
+  },
+  {
+    codename: "Mikey Jang",
+    role: "",
+    instagram: "iHooneez",
+    contact: "",
+    bio: "",
+    color: "#b9a0ff",
+    customAvatar: HooneezAvatar,
+    avatarAspect: 1075.04 / 1391.5,
   },
 ];
 
