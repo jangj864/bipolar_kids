@@ -684,7 +684,7 @@ function ProjectCard({ project }: { project: Project }) {
               }}>{t(project.status)}</div>
             </div>
           </div>
-          <div className="text-xs leading-relaxed mb-3" style={{ color: project.color + "90" }}>{t(project.desc)}</div>
+          <div className="text-xs leading-relaxed whitespace-pre-line mb-3" style={{ color: project.color + "90" }}>{t(project.desc)}</div>
           <TagList tags={project.tags} color={project.color} />
           <div className="flex-1" />
           {website && <a href={website} target="_blank" rel="noopener noreferrer" onClick={e => e.stopPropagation()} className="flex items-center justify-center min-h-11 px-4 mt-4 text-sm" style={{ color: "#000", background: project.color, border: `1px solid ${project.color}`, textDecoration: "none" }}>{t("VISIT WEBSITE ↗")}</a>}
@@ -713,7 +713,7 @@ function ProjectCard({ project }: { project: Project }) {
                 <span style={{ color: project.color + "60" }}>{project.year}</span>
                 <span style={{ color: getStatusColor(PROJECT_STATUS_COLOR, project.status), border: "1px solid currentColor", padding: "0 6px" }}>{t(project.status)}</span>
               </div>
-              <div className="text-xs leading-relaxed" style={{ color: project.color + "90" }}>{t(project.desc)}</div>
+              <div className="text-xs leading-relaxed whitespace-pre-line" style={{ color: project.color + "90" }}>{t(project.desc)}</div>
               <DetailGrid details={project.details} color={project.color}/>
               {website && <a href={website} target="_blank" rel="noopener noreferrer" className="inline-flex items-center min-h-11 px-3 text-xs" style={{ color: project.color, border: `1px solid ${project.color}60` }}>{t("VISIT WEBSITE ↗")}</a>}
               <div className="pt-2"><TagList tags={project.tags} color={project.color} /></div>
@@ -1796,7 +1796,7 @@ function BrandHome({ projects, events, members, onNavigate }: {
       <section className="brand-intro" aria-label="About the collective">
         <span className="brand-section-index">{t("01 / ABOUT US")}</span>
         <div><h2>{t("It started")}<br /><span>{t("with a band.")}</span></h2>
-          <p>{t("5th Ave Bipolar Kids began as a band in 2026. Our members work in music, design, photography, and writing across Seoul, Daegu, and New York. The projects here include both individual work and collaborations.")}</p>
+          <p className="whitespace-pre-line">{t("5th Ave Bipolar Kids began as a band in 2026. Our members work in music, design, photography, and writing across Seoul, Daegu, and New York. The projects here include both individual work and collaborations.")}</p>
           <button className="brand-text-link" onClick={() => onNavigate("members")}>{t("VIEW MEMBERS ↗")}</button>
         </div>
       </section>
@@ -1808,7 +1808,7 @@ function BrandHome({ projects, events, members, onNavigate }: {
             <span className="brand-work-number">0{index + 1}</span>
             <button className="brand-work-open" onClick={() => setSelected(p)} aria-label={`View ${t(p.title)} details`}>
               <span className="brand-work-meta">{t(p.category || "DIGITAL EXPERIENCE")} / {p.year || "2026–"}</span>
-              <h3>{t(p.title)}</h3><p>{t(p.desc)}</p>
+              <h3>{t(p.title)}</h3><p className="whitespace-pre-line">{t(p.desc)}</p>
             </button>
             <button className="brand-work-arrow" aria-label={`Open ${t(p.title)}`} onClick={() => setSelected(p)}>↗</button>
           </article>)}
@@ -1828,7 +1828,7 @@ function BrandHome({ projects, events, members, onNavigate }: {
       {selected && <ModalOverlay color={selected.color} code={selected.code} onClose={() => setSelected(null)}>
         <div className="brand-project-detail">
           {(selected.poster || previews[selected.code]) && <img src={selected.poster || previews[selected.code]} alt={t(selected.title)} />}
-          <span className="brand-section-index">{t(selected.category)} / {selected.year}</span><h2 style={{ color: selected.color }}>{t(selected.title)}</h2><p>{t(selected.desc)}</p><TagList tags={selected.tags} color={selected.color} />
+          <span className="brand-section-index">{t(selected.category)} / {selected.year}</span><h2 style={{ color: selected.color }}>{t(selected.title)}</h2><p className="whitespace-pre-line">{t(selected.desc)}</p><TagList tags={selected.tags} color={selected.color} />
           <DetailGrid details={selected.details} color={selected.color} />
           {(selected.website || selected.code === "PRJ-001") && <a className="brand-button" href={selected.website || "https://jangj864.github.io/kirun_university/"} target="_blank" rel="noopener noreferrer">{t("VISIT WEBSITE ↗")}</a>}
         </div>
