@@ -1051,7 +1051,7 @@ const INITIAL_MEMBERS: Member[] = [
     avatarAspect: 919 / 1279,
   },
   {
-    codename: "Mikey Jang",
+    codename: "Hoonie",
     role: "",
     instagram: "iHooneez",
     contact: "",
